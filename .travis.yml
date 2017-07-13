@@ -1,0 +1,22 @@
+language: scala
+sudo: false
+
+scala:
+  - 2.11.11
+
+jdk: oraclejdk8
+
+script:
+  - bin/scalafmt --test
+  - sbt ++$TRAVIS_SCALA_VERSION test
+
+before_cache:
+  # See http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot
+    - $HOME/.coursier

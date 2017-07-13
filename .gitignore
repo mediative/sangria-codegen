@@ -1,0 +1,10 @@
+target/
+.DS_Store
+.idea/
+.iml
+
+# Ensime
+.ensime*
+
+bin/.coursier
+bin/.scalafmt-*
