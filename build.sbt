@@ -23,6 +23,11 @@ lazy val root = Project(id = "sangria-codegen-root", base = file("."))
   .enablePlugins(MediativeGitHubPlugin, MediativeReleasePlugin)
   .aggregate(codegen)
   .settings(noPublishSettings)
+  .settings(
+    noPublishSettings,
+    // Ignore the macro part when generating the API docs with sbt-unidoc
+    sources in (ScalaUnidoc, unidoc) ~= { _.filter(_.getName != "GraphQLDomain.scala") }
+  )
 
 val codegen = project("sangria-codegen")
   .enablePlugins(MediativeBintrayPlugin)
