@@ -33,16 +33,12 @@ class GraphQLDomain(operations: String, schema: String) extends StaticAnnotation
     defn match {
       case q"object $tname { ..$stats }" =>
         val client = SangriaCodegen(schemaPath, operationsPath).generate()
-        val out  = q"""
+        q"""
           object $tname {
             ..$client
             ..$stats
           }
         """
-        println("==============================================")
-        println(out)
-        println("==============================================")
-        out
 
       case _ =>
         abort("@GraphQLDomain must annotate an object.")
