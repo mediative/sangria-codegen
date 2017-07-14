@@ -30,8 +30,6 @@ import io.circe.Json
 import sangria.schema._
 
 object SangriaCodegen {
-  case class Resources(schema: String, operations: String)
-
   case class Generated(stats: Vector[Stat], params: Vector[Term.Param]) {
     def +(that: Generated) =
       Generated(this.stats ++ that.stats, this.params ++ that.params)
