@@ -12,6 +12,8 @@ inThisBuild(
   ))
 
 lazy val macroAnnotationSettings = Seq(
+  resolvers += Resolver.sonatypeRepo("releases"),
+  resolvers += Resolver.bintrayRepo("scalameta", "maven"),
   addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M9" cross CrossVersion.full),
   scalacOptions += "-Xplugin-require:macroparadise",
   scalacOptions in (Compile, console) ~= (_ filterNot (_ contains "paradise")) // macroparadise plugin doesn't work in repl yet.
