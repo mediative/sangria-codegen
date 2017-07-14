@@ -30,16 +30,28 @@ import io.circe.Json
 import sangria.schema._
 
 object SangriaCodegen {
-  case class Generated(stats: Vector[Stat], params: Vector[Term.Param]) {
-    def +(that: Generated) =
-      Generated(this.stats ++ that.stats, this.params ++ that.params)
+  sealed trait Gen {
+    def stats: Vector[Stat]
+    def params: Vector[Term.Param]
+    def +(that: Gen): Gen =
+      Gen.Selection(this.stats ++ that.stats, this.params ++ that.params)
   }
-  object Generated {
-    def apply(param: Term.Param*): Generated = Generated(Vector.empty, Vector(param: _*))
-    def apply(stats: Vector[Stat], param: Term.Param*): Generated =
-      Generated(stats, Vector(param: _*))
-    def apply(stat: Stat, param: Term.Param*): Generated =
-      Generated(Vector(stat), Vector(param: _*))
+
+  object Gen {
+    case class Selection(stats: Vector[Stat], params: Vector[Term.Param]) extends Gen
+    case class Stats(stats: Vector[Stat]) extends Gen {
+      override def params = Vector.empty
+    }
+    object Stats {
+      def apply(stats: Stat*): Stats = Stats(Vector(stats: _*))
+    }
+    case class Param(params: Vector[Term.Param]) extends Gen {
+      override def stats = Vector.empty
+    }
+    object Param {
+      def apply(paramName: String, typeName: String): Param =
+        Param(Vector(termParam(paramName, typeName)))
+    }
   }
 
   def apply(schemaPath: String, operationsPath: String): SangriaCodegen = {
@@ -63,6 +75,9 @@ object SangriaCodegen {
 
     SangriaCodegen(schema, document)
   }
+
+  def termParam(paramName: String, typeName: String) =
+    Term.Param(Vector.empty, Term.Name(paramName), Some(Type.Name(typeName)), None)
 }
 
 case class SangriaCodegen(schema: Schema[_, _], document: ast.Document) {
@@ -70,7 +85,7 @@ case class SangriaCodegen(schema: Schema[_, _], document: ast.Document) {
   private val typeInfo = new TypeInfo(schema)
 
   def generate(): Vector[Stat] = {
-    val Generated(operations, _) =
+    val operations =
       document.operations.values.map(generateSelection("")).reduce(_ + _)
     val fragments = document.fragments.values.toVector.map(generateFragmentTrait(schema))
 
@@ -80,11 +95,8 @@ case class SangriaCodegen(schema: Schema[_, _], document: ast.Document) {
       .map(_._2)
       .flatMap(generateType)
 
-    Vector(operations, fragments, types).flatten
+    Vector(operations.stats, fragments, types).flatten
   }
-
-  def termParam(paramName: String, typeName: String) =
-    Term.Param(Vector.empty, Term.Name(paramName), Some(Type.Name(typeName)), None)
 
   def isObjectLike(tpe: sangria.schema.Type): Boolean = tpe match {
     case OptionType(wrapped)       => isObjectLike(wrapped)
@@ -110,32 +122,32 @@ case class SangriaCodegen(schema: Schema[_, _], document: ast.Document) {
       abort(s"Unknown type $unknown")
   }
 
-  def generateSelection(prefix: String)(node: ast.AstNode): Generated = {
+  def generateSelection(prefix: String)(node: ast.AstNode): Gen = {
     typeInfo.enter(node)
     val result = node match {
       case field: ast.Field =>
         typeInfo.tpe match {
           case Some(tpe) if !isObjectLike(tpe) =>
             val name = getScalaType(None, tpe)
-            Generated(termParam(field.outputName, name))
+            Gen.Param(field.outputName, name)
 
           case _ =>
             val name = field.outputName.capitalize
-            val Generated(stats, params) =
+            val gen =
               field.selections.map(generateSelection(prefix + name + ".")).reduce(_ + _)
 
             val tpeName  = Type.Name(name)
             val termName = Term.Name(name)
-            Generated(q"case class $tpeName(..$params)") +
-              Generated(
-                Option(stats)
+            Gen.Stats(q"case class $tpeName(..${gen.params})") +
+              Gen.Stats(
+                Option(gen.stats)
                   .filter(_.nonEmpty)
-                  .map { _ =>
+                  .map { stats =>
                     q"object $termName { ..$stats }"
                   }
                   .toVector
               ) +
-              Generated(termParam(field.outputName, prefix + name))
+              Gen.Param(field.outputName, prefix + name)
         }
 
       case fragmentSpread: ast.FragmentSpread =>
@@ -151,23 +163,21 @@ case class SangriaCodegen(schema: Schema[_, _], document: ast.Document) {
         }
 
         val name = operation.name.getOrElse(abort("@GraphQLDomain found unnamed operation"))
-        val Generated(stats, params) =
-          operation.selections.map(generateSelection(name + ".")).reduce(_ + _)
+        val gen  = operation.selections.map(generateSelection(name + ".")).reduce(_ + _)
 
         val tpeName          = Type.Name(name)
         val termName         = Term.Name(name)
         val variableTypeName = Type.Name(name + "Variables")
 
-        val defs = Vector[Stat](
-          q"case class $tpeName(..$params)",
+        Gen.Stats(
+          q"case class $tpeName(..${gen.params})",
           q"""
             object $termName {
               case class $variableTypeName(..$variables)
-              ..$stats
+              ..${gen.stats}
             }
           """
         )
-        Generated(defs)
 
       case x => abort(x.toString)
     }
@@ -186,7 +196,6 @@ case class SangriaCodegen(schema: Schema[_, _], document: ast.Document) {
     }
     val traitName = Type.Name(fragment.name)
     q"trait $traitName { ..$defs }": Stat
-
   }
 
   def generateType(tpe: sangria.schema.Type): Vector[Stat] = tpe match {
