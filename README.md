@@ -15,12 +15,8 @@ Add the following to your `build.sbt`:
 
 ```sbt
 resolvers += Resolver.bintrayRepo("mediative", "maven")
-libraryDependencies += "com.mediative" %% "sangria-codegen" % "0.4.4"
+libraryDependencies += "com.mediative" %% "sangria-codegen" % "0.0.1"
 ```
-
-See the [TestEtl] job to get an idea of what the library provides.
-
- [TestEtl]: core/src/test/scala/com.mediative.sangria.codegen/test/TestEtl.scala
 
 ## Documentation
 
