@@ -2,14 +2,12 @@ object CodegenResult {
   case class HeroAndFriends(hero: HeroAndFriends.Hero)
   object HeroAndFriends {
     case class HeroAndFriendsVariables()
-    implicit val RequestBuilder: _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder[HeroAndFriendsVariables, HeroAndFriends] = new _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder("HeroAndFriends")
     case class Hero(name: Option[String], friends: HeroAndFriends.Hero.Friends)
     object Hero { case class Friends(name: Option[String]) }
   }
   case class HeroAndNestedFriends(hero: HeroAndNestedFriends.Hero)
   object HeroAndNestedFriends {
     case class HeroAndNestedFriendsVariables()
-    implicit val RequestBuilder: _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder[HeroAndNestedFriendsVariables, HeroAndNestedFriends] = new _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder("HeroAndNestedFriends")
     case class Hero(name: Option[String], friends: HeroAndNestedFriends.Hero.Friends)
     object Hero {
       case class Friends(name: Option[String], friends: HeroAndNestedFriends.Hero.Friends.Friends)
@@ -25,14 +23,12 @@ object CodegenResult {
   case class FragmentExample(human: FragmentExample.Human, droid: FragmentExample.Droid)
   object FragmentExample {
     case class FragmentExampleVariables()
-    implicit val RequestBuilder: _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder[FragmentExampleVariables, FragmentExample] = new _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder("FragmentExample")
     case class Human(name: Option[String], appearsIn: Option[List[Option[Episode]]], homePlanet: Option[String])
     case class Droid(name: Option[String], appearsIn: Option[List[Option[Episode]]], primaryFunction: Option[String])
   }
   case class VariableExample(human: VariableExample.Human)
   object VariableExample {
     case class VariableExampleVariables(humanId: String)
-    implicit val RequestBuilder: _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder[VariableExampleVariables, VariableExample] = new _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder("VariableExample")
     case class Human(name: Option[String], homePlanet: Option[String], friends: VariableExample.Human.Friends)
     object Human { case class Friends(name: Option[String]) }
   }

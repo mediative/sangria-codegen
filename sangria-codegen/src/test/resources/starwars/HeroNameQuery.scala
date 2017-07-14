@@ -2,7 +2,6 @@ object CodegenResult {
   case class HeroNameQuery(hero: HeroNameQuery.Hero)
   object HeroNameQuery {
     case class HeroNameQueryVariables()
-    implicit val RequestBuilder: _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder[HeroNameQueryVariables, HeroNameQuery] = new _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder("HeroNameQuery")
     case class Hero(name: Option[String])
   }
   case class Droid(id: String, name: Option[String], friends: Option[List[Option[Character]]], appearsIn: Option[List[Option[Episode]]], primaryFunction: Option[String], secretBackstory: Option[String])

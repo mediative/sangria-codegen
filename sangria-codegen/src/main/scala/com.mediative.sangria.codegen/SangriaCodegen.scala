@@ -163,11 +163,6 @@ case class SangriaCodegen(schema: Schema[_, _], document: ast.Document) {
           q"""
             object $termName {
               case class $variableTypeName(..$variables)
-
-              implicit val RequestBuilder: _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder[$variableTypeName, $tpeName] =
-                new _root_.com.mediative.sangria.codegen.GraphQLRequestBuilder(${Lit
-            .String(name)})
-
               ..$stats
             }
           """

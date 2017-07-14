@@ -20,14 +20,6 @@ import scala.annotation.compileTimeOnly
 import scala.annotation.StaticAnnotation
 import scala.meta._
 
-/** The toplevel GraphQL request JSON. */
-case class GraphQLRequest[T](variables: T, operationName: String)
-
-final class GraphQLRequestBuilder[Variables, Result](val operationName: String) {
-  def toRequest(vars: Variables): GraphQLRequest[Variables] =
-    GraphQLRequest(vars, operationName)
-}
-
 @compileTimeOnly("@GraphQLDomain not expanded")
 class GraphQLDomain(operations: String, schema: String) extends StaticAnnotation {
   inline def apply(defn: Any): Any = meta {
