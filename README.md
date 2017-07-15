@@ -9,7 +9,7 @@
 
 Generate API code based on a GraphQL schema and queries.
 
-Inspired by [apollo-codege](https://github.com/apollographql/apollo-codegen) and
+Inspired by [apollo-codegen](https://github.com/apollographql/apollo-codegen) and
 trying to fix
 [sangria-graphql/sangria#64](https://github.com/sangria-graphql/sangria/issues/64).
 
