@@ -19,15 +19,14 @@ package starwars
 
 import org.scalatest.WordSpec
 import java.io.File
-import sangria.parser.QueryParser
 import scala.io.Source
-import scala.util.Success
 import scala.meta._
 
 class StarWarsCodegenSpec extends WordSpec {
   import TestSchema.StarWarsSchema
 
   val inputDirectory = new File("src/test/resources/starwars")
+  val generator      = ScalametaGenerator("CodegenResult")
 
   def contentOf(file: File) =
     Source.fromFile(file).mkString
@@ -40,14 +39,9 @@ class StarWarsCodegenSpec extends WordSpec {
       if expected.exists
     } {
       s"generate code for ${input.getName}" in {
-        val Success(document) = QueryParser.parse(contentOf(input))
-
-        val client = SangriaCodegen(StarWarsSchema, document).generate()
-        val out    = q"""
-          object CodegenResult {
-            ..$client
-          }
-        """
+        val Right(out) = Builder(StarWarsSchema)
+          .withQuery(input)
+          .generate(generator)
 
         assert(out.show[Syntax].trim == contentOf(expected).trim)
       }

@@ -16,6 +16,7 @@
 
 package com.mediative.sangria.codegen
 
+import java.io.File
 import scala.annotation.compileTimeOnly
 import scala.annotation.StaticAnnotation
 import scala.meta._
@@ -32,13 +33,18 @@ class GraphQLDomain(operations: String, schema: String) extends StaticAnnotation
 
     defn match {
       case q"object $tname { ..$stats }" =>
-        val client = SangriaCodegen(schemaPath, operationsPath).generate()
-        q"""
-          object $tname {
-            ..$client
-            ..$stats
-          }
-        """
+        val generator = ScalametaGenerator(tname, stats)
+        val result = Builder(new File(schemaPath))
+          .withQuery(new File(operationsPath))
+          .generate(generator)
+
+        result match {
+          case Left(error) =>
+            abort(s"@GraphQLDomain failed to expand: ${error.getMessage}")
+
+          case Right(code) =>
+            code
+        }
 
       case _ =>
         abort("@GraphQLDomain must annotate an object.")
