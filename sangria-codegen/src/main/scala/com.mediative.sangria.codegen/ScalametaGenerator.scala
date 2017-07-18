@@ -24,9 +24,9 @@ import cats.implicits._
  * Generate code using Scalameta.
  */
 case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.empty)
-    extends Generator[Stat] {
+    extends Generator[Defn.Object] {
 
-  override def generate(api: Tree.Api) = {
+  override def generate(api: Tree.Api): Result[Defn.Object] = {
     val operations = api.operations.flatMap(generateOperation)
     val fragments  = api.interfaces.map(generateInterface)
     for {
