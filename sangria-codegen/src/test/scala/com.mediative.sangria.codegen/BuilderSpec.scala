@@ -19,12 +19,12 @@ package com.mediative.sangria.codegen
 import org.scalatest.WordSpec
 import java.io.File
 
-class SangriaCodegenSpec extends WordSpec {
+class BuilderSpec extends WordSpec {
   import starwars.TestSchema.StarWarsSchema
 
   val generator = ScalametaGenerator("CodegenResult")
 
-  "SangriaCodegen.Builder" should {
+  "Builder" should {
     "fail with non-existent schema" in {
       val result = Builder(new File("schema-file-does-not-exist"))
         .generate(TreeGenerator)
