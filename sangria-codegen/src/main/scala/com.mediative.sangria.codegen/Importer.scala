@@ -21,7 +21,8 @@ import sangria.schema._
 import sangria.ast
 
 case class Importer(schema: Schema[_, _], document: ast.Document) {
-  private val typeInfo = new TypeInfo(schema)
+  private val typeInfo    = new TypeInfo(schema)
+  private val outputTypes = scala.collection.mutable.Set[OutputType[_]]()
 
   def parse(): Result[Tree.Api] =
     Right(
@@ -29,11 +30,10 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
         document.operations.values.map(generateOperation).toVector,
         document.fragments.values.toVector.map(generateFragment),
         schema.outputTypes.values
-          .filter(t => !Schema.isBuiltInType(t.name))
-          .filter(_ != schema.query)
+          .filter(outputTypes)
           .map(generateOutputType)
-          .toVector
           .flatten
+          .toVector
       ))
 
   def isObjectLike(tpe: sangria.schema.Type): Boolean = tpe match {
@@ -50,6 +50,9 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       scalar.name
     case ListType(wrapped) =>
       s"List[${getScalaType(outputName, wrapped)}]"
+    case outputType: OutputType[_] =>
+      outputTypes += outputType
+      outputName.getOrElse(outputType.namedType.name)
     case t: Type =>
       outputName.getOrElse(t.namedType.name)
   }

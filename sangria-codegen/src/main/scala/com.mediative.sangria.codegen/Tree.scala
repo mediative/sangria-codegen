@@ -23,7 +23,9 @@ import scala.collection.immutable.Seq
  */
 sealed trait Tree
 object Tree {
-  sealed trait OutputType                                  extends Tree
+  sealed trait OutputType extends Tree {
+    def name: String
+  }
   case class Ref(name: String)                             extends Tree
   case class Field[T <: Tree](name: String, tpe: T)        extends Tree
   case class Object(name: String, fields: Seq[Field[Ref]]) extends OutputType

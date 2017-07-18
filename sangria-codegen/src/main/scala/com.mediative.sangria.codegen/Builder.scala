@@ -56,8 +56,8 @@ case class Builder private (
 
   def generate[T](generator: Generator[T]): Result[T] =
     for {
-      validSchema   <- schema.right
-      validDocument <- document.right
+      validSchema   <- schema
+      validDocument <- document
       api           <- Importer(validSchema, validDocument).parse
       result        <- generator.generate(api)
     } yield result
