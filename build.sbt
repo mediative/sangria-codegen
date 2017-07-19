@@ -42,8 +42,8 @@ val codegen = project("sangria-codegen")
   )
 
 val cli = project("sangria-codegen-cli")
+  .enablePlugins(MediativeBintrayPlugin, BuildInfoPlugin)
   .dependsOn(codegen)
-  .enablePlugins(BuildInfoPlugin)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalatest"              %% "scalatest"     % "3.0.3" % Test,
