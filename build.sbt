@@ -21,7 +21,7 @@ lazy val macroAnnotationSettings = Seq(
 
 lazy val root = Project(id = "sangria-codegen-root", base = file("."))
   .enablePlugins(MediativeGitHubPlugin, MediativeReleasePlugin)
-  .aggregate(codegen)
+  .aggregate(codegen, cli)
   .settings(noPublishSettings)
   .settings(
     noPublishSettings,
@@ -39,6 +39,17 @@ val codegen = project("sangria-codegen")
       "org.sangria-graphql" %% "sangria"   % "1.2.1",
       "org.typelevel"       %% "cats"      % "0.9.0"
     )
+  )
+
+val cli = project("sangria-codegen-cli")
+  .dependsOn(codegen)
+  .enablePlugins(BuildInfoPlugin)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.github.scopt" %% "scopt" % "3.6.0"
+    ),
+    buildInfoKeys := Seq[BuildInfoKey](version),
+    buildInfoPackage := "com.mediative.sangria.codegen.cli"
   )
 
 def project(name: String) = Project(id = name, base = file(name))

@@ -39,8 +39,11 @@ case class Builder private (
   def withQuery(query: Document): Builder =
     withQuery(Right(query))
 
-  def withQuery(queryFile: File): Builder =
-    withQuery(Builder.parseDocument(queryFile))
+  def withQuery(queryFiles: File*): Builder = {
+    import cats.implicits._
+    val document = queryFiles.map(Builder.parseDocument).toList.sequenceU.map(_.reduce(_ + _))
+    withQuery(document)
+  }
 
   def generate[T](generator: Generator[T]): Result[T] =
     for {
