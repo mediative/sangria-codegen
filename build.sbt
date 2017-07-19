@@ -46,7 +46,7 @@ val cli = project("sangria-codegen-cli")
   .enablePlugins(BuildInfoPlugin)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.scopt" %% "scopt" % "3.6.0"
+      "com.github.alexarchambault" %% "case-app" % "1.2.0-M3"
     ),
     buildInfoKeys := Seq[BuildInfoKey](version),
     buildInfoPackage := "com.mediative.sangria.codegen.cli"

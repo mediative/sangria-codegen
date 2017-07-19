@@ -1,90 +1,63 @@
 package com.mediative.sangria.codegen
 package cli
 
-import java.io.File
 import scala.meta._
+import java.io.{File, PrintStream}
+import caseapp._
+import cats.syntax.either._
 
-case class Config(
-    command: String = "default",
-    schema: Option[File] = None,
+sealed trait Command
+
+case class Generate(
+    @HelpMessage("Path to GraphQL schema file")
+    @ValueDescription("file")
+    schema: String = "schema.graphql",
+    @HelpMessage("Name of the enclosing object")
+    @ValueDescription("name")
     `object`: String = "SangriaCodegen",
+    @HelpMessage("Package name of the generated code")
+    @ValueDescription("name")
     `package`: Option[String] = None,
-    output: Option[File] = None,
-    files: Seq[File] = Seq.empty
-)
+    @HelpMessage("Output file for the generated code")
+    @ValueDescription("path")
+    output: Option[String] = None
+) extends Command
 
-object Main {
-  val parser = new scopt.OptionParser[Config]("sangria-codegen") {
-    head("Sangria Codegen", BuildInfo.version)
-    help("help").text("Prints this usage text")
-    version("version")
+object Main extends CommandApp[Command] {
 
-    note("")
+  override val appName    = "Sangria Codegen"
+  override val appVersion = BuildInfo.version
+  override val progName   = "sangria-codegen"
 
-    cmd("generate")
-      .action((_, c) => c.copy(command = "generate"))
-      .text("Generate code from a GraphQL schema and query documents")
-      .children(
-        opt[File]('s', "schema")
-          .required()
-          .valueName("<file>")
-          .action((file, opts) => opts.copy(schema = Some(file)))
-          .text("Output file for the generated code"),
-        opt[File]('o', "output")
-          .valueName("<file>")
-          .action((file, opts) => opts.copy(output = Some(file)))
-          .text("Output file for the generated code"),
-        opt[String]('p', "package")
-          .valueName("<name>")
-          .action((name, opts) => opts.copy(`package` = Some(name)))
-          .text("Package name of the generated code"),
-        opt[String]('O', "object")
-          .valueName("<name>")
-          .action((name, opts) => opts.copy(`object` = name))
-          .text("Name of the enclosing object"),
-        arg[File]("<file>...")
-          .unbounded()
-          .optional()
-          .action((x, c) => c.copy(files = c.files :+ x))
-          .text("optional unbounded args")
-      )
-  }
-
-  def main(args: Array[String]): Unit = {
-    def terminate(result: Result[Unit]) = {
-      result.left.map { failure =>
-        parser.reportError(failure.getMessage)
-        System.exit(1)
-      }
-      ()
+  def run(command: Command, args: RemainingArgs): Unit = {
+    val result: Result[Unit] = command match {
+      case options: Generate => generate(options, args.args)
     }
 
-    parser.parse(args, Config()) match {
-      case Some(config) if config.command == "generate" =>
-        terminate(generate(config))
-
-      case Some(config) if config.command == "default" =>
-        parser.showUsage()
-
-      case None =>
-        System.exit(1)
+    result.left.foreach { failure =>
+      System.err.println(failure.getMessage)
+      System.exit(1)
     }
+    ()
   }
 
-  def generate(config: Config): Result[Unit] = {
-    val output    = config.output.map(file => new java.io.PrintStream(file)).getOrElse(System.out)
-    val generator = ScalametaGenerator(config.`object`)
+  def generate(generate: Generate, args: Seq[String]): Result[Unit] = {
+    val output    = outputStream(generate.output)
+    val generator = ScalametaGenerator(generate.`object`)
+    val files     = args.map(path => new File(path))
 
-    Builder(config.schema.get)
-      .withQuery(config.files: _*)
+    Builder(new File(generate.schema))
+      .withQuery(files: _*)
       .generate(generator)
-      .right
       .map { code =>
-        config.`package`.foreach { packageName =>
+        generate.`package`.foreach { packageName =>
           output.println(s"package $packageName\n")
           output.println()
         }
         output.println(code.show[Syntax])
       }
   }
+
+  def outputStream(path: Option[String]): PrintStream =
+    path.map(file => new PrintStream(file)).getOrElse(System.out)
 }
