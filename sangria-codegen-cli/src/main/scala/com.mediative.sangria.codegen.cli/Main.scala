@@ -9,7 +9,11 @@ import scala.meta.{io => _, _}
 import caseapp._
 import cats.syntax.either._
 
-sealed trait Command
+sealed trait Command {
+  def run(args: Seq[String]): Result[Unit]
+  def outputStream(path: Option[String]): PrintStream =
+    path.map(file => new PrintStream(file)).getOrElse(System.out)
+}
 
 case class Generate(
     @HelpMessage("Path to GraphQL schema file")
@@ -24,7 +28,24 @@ case class Generate(
     @HelpMessage("Output file for the generated code")
     @ValueDescription("path")
     output: Option[String] = None
-) extends Command
+) extends Command {
+  def run(args: Seq[String]): Result[Unit] = {
+    val stdout    = outputStream(output)
+    val generator = ScalametaGenerator(`object`)
+    val files     = args.map(path => new File(path))
+
+    Builder(new File(schema))
+      .withQuery(files: _*)
+      .generate(generator)
+      .map { code =>
+        `package`.foreach { packageName =>
+          stdout.println(s"package $packageName\n")
+          stdout.println()
+        }
+        stdout.println(code.show[Syntax])
+      }
+  }
+}
 
 case class PrintSchema(
     @HelpMessage("Path to GraphQL introspection query result")
@@ -33,50 +54,13 @@ case class PrintSchema(
     @HelpMessage("Output path for GraphQL schema language file")
     @ValueDescription("path")
     output: Option[String] = None
-) extends Command
+) extends Command {
+  def run(args: Seq[String]): Result[Unit] = {
+    val stdout = outputStream(output)
 
-object Main extends CommandApp[Command] {
-
-  override val appName    = "Sangria Codegen"
-  override val appVersion = BuildInfo.version
-  override val progName   = "sangria-codegen"
-
-  def run(command: Command, args: RemainingArgs): Unit = {
-    val result: Result[Unit] = command match {
-      case options: Generate    => generate(options, args.args)
-      case options: PrintSchema => printSchema(options)
-    }
-
-    result.left.foreach { failure =>
-      System.err.println(failure.getMessage)
-      System.exit(1)
-    }
-    ()
-  }
-
-  def generate(generate: Generate, args: Seq[String]): Result[Unit] = {
-    val output    = outputStream(generate.output)
-    val generator = ScalametaGenerator(generate.`object`)
-    val files     = args.map(path => new File(path))
-
-    Builder(new File(generate.schema))
-      .withQuery(files: _*)
-      .generate(generator)
-      .map { code =>
-        generate.`package`.foreach { packageName =>
-          output.println(s"package $packageName\n")
-          output.println()
-        }
-        output.println(code.show[Syntax])
-      }
-  }
-
-  def printSchema(printSchema: PrintSchema): Result[Unit] = {
-    val output = outputStream(printSchema.output)
-
-    parseIntrospectionSchema(new File(printSchema.schema))
+    parseIntrospectionSchema(new File(schema))
       .map { schema =>
-        output.println(schema.renderPretty)
+        stdout.println(schema.renderPretty)
       }
   }
 
@@ -95,7 +79,20 @@ object Main extends CommandApp[Command] {
           Failure(s"Failed to parse schema in $schemaFile: ${error.getMessage}")
         }
     } yield schema
+}
 
-  def outputStream(path: Option[String]): PrintStream =
-    path.map(file => new PrintStream(file)).getOrElse(System.out)
+object Main extends CommandApp[Command] {
+
+  override val appName    = "Sangria Codegen"
+  override val appVersion = BuildInfo.version
+  override val progName   = "sangria-codegen"
+
+  override def run(command: Command, args: RemainingArgs): Unit = {
+    command.run(args.args).left.foreach { failure =>
+      System.err.println(failure.getMessage)
+      System.exit(1)
+    }
+    ()
+  }
+
 }

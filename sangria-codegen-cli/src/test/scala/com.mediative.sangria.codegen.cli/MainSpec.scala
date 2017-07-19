@@ -22,16 +22,16 @@ class MainSpec extends WordSpec with BeforeAndAfter {
     "pretty-print result of instrospection query in the GraphQL schema language format" in {
       val schemaPath = new File(testDir, "schema.json").getAbsolutePath
       val output     = new File(outputDir, "schema.graphql")
-      val options    = PrintSchema(schema = schemaPath, output = Some(output.getAbsolutePath))
-      val Right(_)   = Main.printSchema(options)
+      val command    = PrintSchema(schema = schemaPath, output = Some(output.getAbsolutePath))
+      val Right(_)   = command.run(Seq.empty)
 
       val expected = new File(testDir, "schema.graphql")
       assert(contentOf(output) == contentOf(expected))
     }
 
     "fail if --schema file does not exist" in {
-      val options     = PrintSchema(schema = "does-not-exist.json")
-      val Left(error) = Main.printSchema(options)
+      val command     = PrintSchema(schema = "does-not-exist.json")
+      val Left(error) = command.run(Seq.empty)
       assert(error.getMessage.startsWith("Failed to parse schema in does-not-exist.json"))
     }
   }
