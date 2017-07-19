@@ -33,23 +33,13 @@ object CodegenResult {
     object Human { case class Friends(name: Option[String]) }
   }
   trait Common {
-    def id: String
     def name: Option[String]
-    def friends: Option[List[Option[Character]]]
     def appearsIn: Option[List[Option[Episode]]]
-    def secretBackstory: Option[String]
   }
   sealed trait Episode
   object Episode {
     case object NEWHOPE extends Episode
     case object EMPIRE extends Episode
     case object JEDI extends Episode
-  }
-  trait Character {
-    def id: String
-    def name: Option[String]
-    def friends: Option[List[Option[Character]]]
-    def appearsIn: Option[List[Option[Episode]]]
-    def secretBackstory: Option[String]
   }
 }

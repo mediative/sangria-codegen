@@ -68,8 +68,7 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
 
           case _ =>
             val name = field.outputName
-            val gen =
-              field.selections.map(generateSelection).reduce(_ + _)
+            val gen  = field.selections.map(generateSelection).reduce(_ + _)
             Tree.Selection(Vector(Tree.Field(name, gen)))
         }
 
@@ -78,6 +77,9 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
         val fragment = document.fragments(fragmentSpread.name)
         // FIXME: Add notion of interface
         fragment.selections.map(generateSelection).reduce(_ + _)
+
+      case inlineFragment: ast.InlineFragment =>
+        inlineFragment.selections.map(generateSelection).reduce(_ + _)
 
       case unknown =>
         sys.error("Unknown selection: " + unknown.toString)
@@ -99,11 +101,12 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
   }
 
   def generateFragment(fragment: ast.FragmentDefinition): Tree.Interface = {
-    val outputType                      = schema.getOutputType(fragment.typeCondition, topLevel = true)
-    val Some(obj: ObjectLikeType[_, _]) = outputType
-    val fields = obj.uniqueFields.map { field =>
-      val tpe = getScalaType(None, field.fieldType)
-      Tree.Field(field.name, Tree.Ref(tpe))
+    typeInfo.enter(fragment)
+    val selection = fragment.selections.map(generateSelection).reduce(_ + _)
+    typeInfo.leave(fragment)
+    val fields = selection.fields.collect {
+      case tree @ Tree.Field(name, Tree.Ref(tpe)) => Tree.Field(name, Tree.Ref(tpe))
+      case tree @ Tree.Field(name, _)             => Tree.Field(name, Tree.Ref(name.capitalize))
     }
     Tree.Interface(fragment.name, fields)
   }
