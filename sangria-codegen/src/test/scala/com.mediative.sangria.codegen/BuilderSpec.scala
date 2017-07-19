@@ -30,8 +30,8 @@ class BuilderSpec extends WordSpec {
         .generate(TreeGenerator)
 
       assert(
-        result == Left(Failure("Failed to parse schema in schema-file-does-not-exist: " +
-          "io.circe.ParsingFailure: schema-file-does-not-exist (No such file or directory)")))
+        result == Left(Failure("Failed to read schema-file-does-not-exist: " +
+          "schema-file-does-not-exist (No such file or directory)")))
     }
 
     "fail with non-existent query" in {
@@ -40,7 +40,7 @@ class BuilderSpec extends WordSpec {
         .generate(TreeGenerator)
 
       assert(
-        result == Left(Failure("Failed to read query from query-file-does-not-exist: " +
+        result == Left(Failure("Failed to read query-file-does-not-exist: " +
           "query-file-does-not-exist (No such file or directory)")))
     }
 

@@ -34,11 +34,10 @@ val codegen = project("sangria-codegen")
   .settings(
     macroAnnotationSettings,
     libraryDependencies ++= Seq(
-      "org.scalatest"       %% "scalatest"     % "3.0.3" % Test,
-      "org.scalameta"       %% "scalameta"     % "1.8.0",
-      "org.sangria-graphql" %% "sangria"       % "1.2.1",
-      "org.sangria-graphql" %% "sangria-circe" % "1.1.0",
-      "io.circe"            %% "circe-jawn"    % "0.8.0"
+      "org.scalatest"       %% "scalatest" % "3.0.3" % Test,
+      "org.scalameta"       %% "scalameta" % "1.8.0",
+      "org.sangria-graphql" %% "sangria"   % "1.2.1",
+      "org.typelevel"       %% "cats"      % "0.9.0"
     )
   )
 

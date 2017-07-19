@@ -19,40 +19,28 @@ package com.mediative.sangria.codegen
 import java.io.File
 import scala.io.Source
 import cats.syntax.either._
-import io.circe.Json
-import sangria.marshalling.circe._
 import sangria.parser.QueryParser
 import sangria.schema._
-import sangria.ast
+import sangria.ast.Document
 
 case class Builder private (
     schema: Result[Schema[_, _]],
-    document: Result[ast.Document] = Right(ast.Document.emptyStub)
+    document: Result[Document] = Right(Document.emptyStub)
 ) {
-  private def withQuery(query: Result[ast.Document]): Builder = {
+  private def withQuery(query: Result[Document]): Builder = {
     val merged =
       document.right.flatMap { doc =>
-        if (doc == ast.Document.emptyStub) query
+        if (doc == Document.emptyStub) query
         else query.right.map(doc.merge)
       }
     copy(document = merged)
   }
 
-  def withQuery(query: ast.Document): Builder =
+  def withQuery(query: Document): Builder =
     withQuery(Right(query))
 
-  def withQuery(queryFile: File): Builder = {
-    val query = for {
-      query <- Either.catchNonFatal(Source.fromFile(queryFile).mkString).leftMap { error =>
-        Failure(s"Failed to read query from $queryFile: ${error.getMessage}")
-      }
-      document <- Either.fromTry(QueryParser.parse(query)).leftMap { error =>
-        Failure(s"Failed to parse query in $queryFile: ${error.getMessage}")
-      }
-    } yield document
-
-    withQuery(query)
-  }
+  def withQuery(queryFile: File): Builder =
+    withQuery(Builder.parseDocument(queryFile))
 
   def generate[T](generator: Generator[T]): Result[T] =
     for {
@@ -68,19 +56,18 @@ object Builder {
 
   def apply(schemaFile: File): Builder = {
     val schema = for {
-      json <- io.circe.jawn.parseFile(schemaFile).leftMap { error =>
-        Failure(s"Failed to parse schema in $schemaFile: $error")
-      }
-
-      schema <- Either
-        .catchNonFatal {
-          val builder = new DefaultIntrospectionSchemaBuilder[Unit]
-          Schema.buildFromIntrospection[Unit, Json](json, builder)
-        }
-        .leftMap { error =>
-          Failure(s"Failed to parse schema in $schemaFile: $error")
-        }
-    } yield schema
+      document <- parseDocument(schemaFile)
+    } yield Schema.buildFromAst(document)
     new Builder(schema)
   }
+
+  private def parseDocument(file: File): Result[Document] =
+    for {
+      input <- Either.catchNonFatal(Source.fromFile(file).mkString).leftMap { error =>
+        Failure(s"Failed to read $file: ${error.getMessage}")
+      }
+      document <- Either.fromTry(QueryParser.parse(input)).leftMap { error =>
+        Failure(s"Failed to parse $file: ${error.getMessage}")
+      }
+    } yield document
 }
