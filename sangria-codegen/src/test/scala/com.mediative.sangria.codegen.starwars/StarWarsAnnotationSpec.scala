@@ -21,7 +21,7 @@ import org.scalatest.{WordSpec, Matchers}
 
 class StarWarsAnnotationSpec extends WordSpec with Matchers {
   "GraphQLDomain" should {
-    "support the Star Wards schema and operations" in {
+    "support the Star Wars schema and operations" in {
       sangria.introspection.introspectionQuery
       """
       import com.mediative.sangria.codegen.GraphQLDomain
