@@ -55,9 +55,7 @@ object Builder {
   def apply(schema: Schema[_, _]): Builder = new Builder(Right(schema))
 
   def apply(schemaFile: File): Builder = {
-    val schema = for {
-      document <- parseDocument(schemaFile)
-    } yield Schema.buildFromAst(document)
+    val schema = parseDocument(schemaFile).map(Schema.buildFromAst)
     new Builder(schema)
   }
 
