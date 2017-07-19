@@ -56,11 +56,15 @@ case class Builder private (
 
 object Builder {
   def apply(schema: Schema[_, _]): Builder = new Builder(Right(schema))
+  def apply(schemaFile: File): Builder     = new Builder(parseSchema(schemaFile))
 
-  def apply(schemaFile: File): Builder = {
-    val schema = parseDocument(schemaFile).map(Schema.buildFromAst)
-    new Builder(schema)
-  }
+  private def parseSchema(file: File): Result[Schema[_, _]] =
+    for {
+      document <- parseDocument(file)
+      schema <- Either.catchNonFatal(Schema.buildFromAst(document)).leftMap { error =>
+        Failure(s"Failed to read schema $file: ${error.getMessage}")
+      }
+    } yield schema
 
   private def parseDocument(file: File): Result[Document] =
     for {

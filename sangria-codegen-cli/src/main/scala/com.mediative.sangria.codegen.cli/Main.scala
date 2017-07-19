@@ -1,8 +1,11 @@
 package com.mediative.sangria.codegen
 package cli
 
-import scala.meta._
 import java.io.{File, PrintStream}
+import io.circe.Json
+import sangria.schema._
+import sangria.marshalling.circe._
+import scala.meta.{io => _, _}
 import caseapp._
 import cats.syntax.either._
 
@@ -23,6 +26,15 @@ case class Generate(
     output: Option[String] = None
 ) extends Command
 
+case class PrintSchema(
+    @HelpMessage("Path to GraphQL introspection query result")
+    @ValueDescription("file")
+    schema: String = "schema.json",
+    @HelpMessage("Output path for GraphQL schema language file")
+    @ValueDescription("path")
+    output: Option[String] = None
+) extends Command
+
 object Main extends CommandApp[Command] {
 
   override val appName    = "Sangria Codegen"
@@ -31,7 +43,8 @@ object Main extends CommandApp[Command] {
 
   def run(command: Command, args: RemainingArgs): Unit = {
     val result: Result[Unit] = command match {
-      case options: Generate => generate(options, args.args)
+      case options: Generate    => generate(options, args.args)
+      case options: PrintSchema => printSchema(options)
     }
 
     result.left.foreach { failure =>
@@ -57,6 +70,31 @@ object Main extends CommandApp[Command] {
         output.println(code.show[Syntax])
       }
   }
+
+  def printSchema(printSchema: PrintSchema): Result[Unit] = {
+    val output = outputStream(printSchema.output)
+
+    parseIntrospectionSchema(new File(printSchema.schema))
+      .map { schema =>
+        output.println(schema.renderPretty)
+      }
+  }
+
+  def parseIntrospectionSchema(schemaFile: File): Result[Schema[_, _]] =
+    for {
+      json <- io.circe.jawn.parseFile(schemaFile).leftMap { error: io.circe.ParsingFailure =>
+        Failure(s"Failed to parse schema in $schemaFile: $error")
+      }
+
+      schema <- Either
+        .catchNonFatal {
+          val builder = new DefaultIntrospectionSchemaBuilder[Unit]
+          Schema.buildFromIntrospection[Unit, Json](json, builder)
+        }
+        .leftMap { error: Throwable =>
+          Failure(s"Failed to parse schema in $schemaFile: ${error.getMessage}")
+        }
+    } yield schema
 
   def outputStream(path: Option[String]): PrintStream =
     path.map(file => new PrintStream(file)).getOrElse(System.out)
