@@ -23,8 +23,8 @@ object CodegenResult {
   case class FragmentExample(human: FragmentExample.Human, droid: FragmentExample.Droid)
   object FragmentExample {
     case class FragmentExampleVariables()
-    case class Human(name: Option[String], appearsIn: Option[List[Option[Episode]]], homePlanet: Option[String])
-    case class Droid(name: Option[String], appearsIn: Option[List[Option[Episode]]], primaryFunction: Option[String])
+    case class Human(name: Option[String], appearsIn: Option[List[Option[Episode]]], homePlanet: Option[String]) extends Common
+    case class Droid(name: Option[String], appearsIn: Option[List[Option[Episode]]], primaryFunction: Option[String]) extends Common
   }
   case class VariableExample(human: VariableExample.Human)
   object VariableExample {

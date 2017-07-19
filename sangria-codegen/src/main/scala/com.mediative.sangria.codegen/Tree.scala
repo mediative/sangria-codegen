@@ -29,9 +29,10 @@ object Tree {
   case class Ref(name: String)                             extends Tree
   case class Field[T <: Tree](name: String, tpe: T)        extends Tree
   case class Object(name: String, fields: Seq[Field[Ref]]) extends OutputType
-  case class Selection(fields: Seq[Field[Tree]]) extends Tree {
+  case class Selection(fields: Seq[Field[Tree]], interfaces: Seq[String] = Vector.empty)
+      extends Tree {
     def +(that: Selection) =
-      Selection(this.fields ++ that.fields)
+      Selection((this.fields ++ that.fields).distinct, this.interfaces ++ that.interfaces)
   }
   case class Interface(name: String, fields: Seq[Field[Ref]]) extends OutputType
   case class Enum(name: String, vaules: Seq[String])          extends OutputType

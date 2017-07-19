@@ -29,9 +29,21 @@ query HeroNameAliasAndAppearances {
   }
 }
 
+query HeroFragmentOverlap {
+  hero {
+    ...Identifiable
+    ...Appearances
+  }
+}
+
 fragment Appearances on Character {
   name
   appearsIn
+}
+
+fragment Identifiable on Character {
+  id
+  name
 }
 
 fragment NameAlias on Character {

@@ -75,8 +75,10 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       case fragmentSpread: ast.FragmentSpread =>
         val name     = fragmentSpread.name
         val fragment = document.fragments(fragmentSpread.name)
-        // FIXME: Add notion of interface
-        fragment.selections.map(generateSelection).reduce(_ + _)
+        fragment.selections
+          .map(generateSelection)
+          .reduce(_ + _)
+          .copy(interfaces = Vector(name))
 
       case inlineFragment: ast.InlineFragment =>
         inlineFragment.selections.map(generateSelection).reduce(_ + _)

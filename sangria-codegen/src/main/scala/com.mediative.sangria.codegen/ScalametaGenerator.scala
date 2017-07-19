@@ -65,9 +65,13 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
           val stats  = generateSelectionStats(prefix + name.capitalize + ".")(selection)
           val params = generateSelectionParams(prefix + name.capitalize + ".")(selection)
 
-          val tpeName  = Type.Name(name.capitalize)
-          val termName = Term.Name(name.capitalize)
-          Vector(q"case class $tpeName(..${params})") ++
+          val tpeName   = Type.Name(name.capitalize)
+          val termName  = Term.Name(name.capitalize)
+          val ctorNames = selection.interfaces.map(Ctor.Name.apply)
+          val emptySelf = Term.Param(Vector.empty, Name.Anonymous(), None, None)
+          val template  = Template(Nil, ctorNames, emptySelf, None)
+
+          Vector(q"case class $tpeName(..${params}) extends $template") ++
             Option(stats)
               .filter(_.nonEmpty)
               .map { stats =>
