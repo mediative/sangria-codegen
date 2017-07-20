@@ -27,7 +27,7 @@ class BuilderSpec extends WordSpec {
   "Builder" should {
     "fail with non-existent schema" in {
       val result = Builder(new File("schema-file-does-not-exist"))
-        .generate(TreeGenerator)
+        .generate[Tree.Api]
 
       assert(
         result == Left(Failure("Failed to read schema-file-does-not-exist: " +
@@ -37,7 +37,7 @@ class BuilderSpec extends WordSpec {
     "fail with non-existent query" in {
       val result = Builder(StarWarsSchema)
         .withQuery(new File("query-file-does-not-exist"))
-        .generate(TreeGenerator)
+        .generate[Tree.Api]
 
       assert(
         result == Left(Failure("Failed to read query-file-does-not-exist: " +
@@ -48,7 +48,7 @@ class BuilderSpec extends WordSpec {
       val Right(tree) = Builder(StarWarsSchema)
         .withQuery(new File("src/test/resources/starwars/HeroAndFriends.graphql"))
         .withQuery(new File("src/test/resources/starwars/HeroNameQuery.graphql"))
-        .generate(TreeGenerator)
+        .generate[Tree.Api]
 
       assert(tree.operations.flatMap(_.name) == Vector("HeroAndFriends", "HeroNameQuery"))
     }

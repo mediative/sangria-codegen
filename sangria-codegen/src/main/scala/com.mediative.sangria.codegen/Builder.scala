@@ -45,7 +45,7 @@ case class Builder private (
     withQuery(document)
   }
 
-  def generate[T](generator: Generator[T]): Result[T] =
+  def generate[T](implicit generator: Generator[T]): Result[T] =
     for {
       validSchema   <- schema
       validDocument <- document
