@@ -21,7 +21,7 @@ lazy val macroAnnotationSettings = Seq(
 
 lazy val root = Project(id = "sangria-codegen-root", base = file("."))
   .enablePlugins(MediativeGitHubPlugin, MediativeReleasePlugin)
-  .aggregate(codegen, cli)
+  .aggregate(codegen, cli, sbtPlugin)
   .settings(noPublishSettings)
   .settings(
     noPublishSettings,
@@ -53,6 +53,24 @@ val cli = project("sangria-codegen-cli")
     ),
     buildInfoKeys := Seq[BuildInfoKey](version),
     buildInfoPackage := "com.mediative.sangria.codegen.cli"
+  )
+
+val sbtPlugin = project("sbt-sangria-codegen")
+  .enablePlugins(MediativeBintrayPlugin, BuildInfoPlugin)
+  .settings(
+    scalaVersion := "2.10.6",
+    scalacOptions ~= { _.filterNot(Set("-Ywarn-unused-import")) },
+    publishLocal := publishLocal
+      .dependsOn(publishLocal in codegen)
+      .dependsOn(publishLocal in cli)
+      .value,
+    sbt.Keys.sbtPlugin := true,
+    bintrayRepository := "sbt-plugins",
+    scriptedSettings,
+    // scriptedBufferLog := false,
+    scriptedLaunchOpts += "-Dproject.version=" + version.value,
+    buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion),
+    buildInfoPackage := "com.mediative.sangria.codegen.sbt"
   )
 
 def project(name: String) = Project(id = name, base = file(name))
