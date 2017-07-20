@@ -19,13 +19,53 @@ package com.mediative.sangria.codegen.sbt
 import sbt._
 import sbt.Keys._
 
+/**
+ * Generate API code based on a GraphQL schema and queries.
+ *
+ * == Usage ==
+ *
+ * This plugin must be explicitly enabled. To enable it add the following line
+ * to your `.sbt` file:
+ * {{{
+ * enablePlugins(SangriaCodegenPlugin)
+ * }}}
+ *
+ * By default, the plugin reads `*.graphql` files from the resources directory
+ * and generates a single Scala source files in the managed source directory.
+ *
+ * See the [[https://github.com/mediative/sangria-codegen/tree/master/sbt-sangria-codegen/src/sbt-test/sangria-codegen/generate example project]].
+ *
+ * == Configuration ==
+ *
+ * Keys are defined in [[SangriaCodegenPlugin.autoImport]].
+ *
+ *  - `sangriaCodegenSchema`: The GraphQL schema file. *
+ *  - `sangriaCodegenQueries`: GraphQL query documents. Defaults to `*.graphql`
+ *   files found inside  which are found inside the resources directory.
+ *
+ *  - `resourceDirectories in sangriaCodegen`: The resource directories in which
+ *    to search for GraphQL query documents.
+ *
+ *  - `includeFilter in sangriaCodegen`: Filter which query documents to include.
+ *    Defaults to `"*.graphql"`.
+ *
+ *  - `excludeFilter in sangriaCodegen`: Filter out query documents.
+ *    Defaults to `HiddenFileFilter`.
+ *
+ * @example
+ * {{{
+ * sangriaCodegenSchema := sourceDirectory.value / "graphql" / "schema.graphql"
+ * sangriaCodegenQueries += sourceDirectory.value / "graphql" / "api.graphql"
+ * }}}
+ *
+ */
 object SangriaCodegenPlugin extends AutoPlugin {
 
   object autoImport {
     val SangriaCodegen        = config("sangria-codegen")
-    val sangriaCodegenSchema  = taskKey[File]("Path to the GraphQL schema")
+    val sangriaCodegenSchema  = taskKey[File]("GraphQL schema file")
     val sangriaCodegenQueries = taskKey[Seq[File]]("GraphQL query documents")
-    val sangriaCodegen        = taskKey[File]("Generate the Path to the DC/OS CLI")
+    val sangriaCodegen        = taskKey[File]("Generate GraphQL API code")
   }
   import autoImport._
 
