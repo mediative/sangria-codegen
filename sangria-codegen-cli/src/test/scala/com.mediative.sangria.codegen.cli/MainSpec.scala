@@ -39,12 +39,27 @@ class MainSpec extends WordSpec with BeforeAndAfter {
       val schemaPath = new File(testDir, "schema.graphql").getAbsolutePath
       val query      = new File(testDir, "HeroNameQuery.graphql")
       val output     = new File(outputDir, "subdir/HeroNameQuery.scala")
-      val command    = Generate(
+      val command = Generate(
         schema = schemaPath,
         `object` = "HeroNameQuery",
         output = Some(output.getAbsolutePath)
       )
-      val Right(_)   = command.run(Seq(query.getAbsolutePath))
+      val Right(_) = command.run(Seq(query.getAbsolutePath))
+
+      val expected = new File(testDir, "HeroNameQuery.scala")
+      assert(contentOf(output) == contentOf(expected))
+    }
+
+    "generate Scala code using GraphQL JSON schema" in {
+      val schemaPath = new File(testDir, "schema.json").getAbsolutePath
+      val query      = new File(testDir, "HeroNameQuery.graphql")
+      val output     = new File(outputDir, "from/json/HeroNameQuery.scala")
+      val command = Generate(
+        schema = schemaPath,
+        `object` = "HeroNameQuery",
+        output = Some(output.getAbsolutePath)
+      )
+      val Right(_) = command.run(Seq(query.getAbsolutePath))
 
       val expected = new File(testDir, "HeroNameQuery.scala")
       assert(contentOf(output) == contentOf(expected))

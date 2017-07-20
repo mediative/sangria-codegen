@@ -37,6 +37,22 @@ sealed trait Command {
         file.getParentFile.mkdirs()
         new PrintStream(file)
     }
+
+  def parseIntrospectionSchema(schemaFile: File): Result[Schema[_, _]] =
+    for {
+      json <- io.circe.jawn.parseFile(schemaFile).leftMap { error: io.circe.ParsingFailure =>
+        Failure(s"Failed to parse schema in $schemaFile: $error")
+      }
+
+      schema <- Either
+        .catchNonFatal {
+          val builder = new DefaultIntrospectionSchemaBuilder[Unit]
+          Schema.buildFromIntrospection[Unit, Json](json, builder)
+        }
+        .leftMap { error: Throwable =>
+          Failure(s"Failed to parse schema in $schemaFile: ${error.getMessage}")
+        }
+    } yield schema
 }
 
 case class Generate(
@@ -54,10 +70,16 @@ case class Generate(
     output: Option[String] = None
 ) extends Command {
   def run(args: Seq[String]): Result[Unit] = {
-    val generator = ScalametaGenerator(`object`)
-    val files     = args.map(path => new File(path))
+    val generator  = ScalametaGenerator(`object`)
+    val files      = args.map(path => new File(path))
+    val schemaFile = new File(schema)
+    val builder =
+      if (schema.endsWith(".json"))
+        Builder(parseIntrospectionSchema(schemaFile))
+      else
+        Builder(schemaFile)
 
-    Builder(new File(schema))
+    builder
       .withQuery(files: _*)
       .generate(generator)
       .map { code =>
@@ -87,22 +109,6 @@ case class PrintSchema(
         stdout.println(schema.renderPretty)
         stdout.close()
       }
-
-  def parseIntrospectionSchema(schemaFile: File): Result[Schema[_, _]] =
-    for {
-      json <- io.circe.jawn.parseFile(schemaFile).leftMap { error: io.circe.ParsingFailure =>
-        Failure(s"Failed to parse schema in $schemaFile: $error")
-      }
-
-      schema <- Either
-        .catchNonFatal {
-          val builder = new DefaultIntrospectionSchemaBuilder[Unit]
-          Schema.buildFromIntrospection[Unit, Json](json, builder)
-        }
-        .leftMap { error: Throwable =>
-          Failure(s"Failed to parse schema in $schemaFile: ${error.getMessage}")
-        }
-    } yield schema
 }
 
 object Main extends CommandApp[Command] {
