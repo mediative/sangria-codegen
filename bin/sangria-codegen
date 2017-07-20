@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# set -x
+
+HERE="$(dirname $0)"
+VERSION="0.0.4"
+COURSIER="$HERE/.coursier"
+COMMAND="$HERE/.sangria-codegen-$VERSION"
+
+if [ ! -f "$COURSIER" ]; then
+  curl -L -o "$COURSIER" https://git.io/vgvpD
+  chmod +x "$COURSIER"
+fi
+
+if [ ! -f "$COMMAND" ]; then
+  "$COURSIER" bootstrap com.mediative:sangria-codegen-cli_2.11:$VERSION \
+    --repository central \
+    --repository bintray:mediative/maven \
+    --main com.mediative.sangria.codegen.cli.Main \
+    -o "$COMMAND"
+  chmod +x "$COMMAND"
+fi
+
+"$COMMAND" "$@"

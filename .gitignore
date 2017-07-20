@@ -8,3 +8,4 @@ target/
 
 bin/.coursier
 bin/.scalafmt-*
+bin/.sangria-codegen-*
