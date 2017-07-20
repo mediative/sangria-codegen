@@ -30,8 +30,7 @@ lazy val root = Project(id = "sangria-codegen-root", base = file("."))
     noPublishSettings,
     releaseCrossBuild := false,
     releaseProcess := Seq[ReleaseStep](
-      checkSnapshotDependencies,
-      { st: State =>
+      checkSnapshotDependencies, { st: State =>
         val v = sys.props.get("version").getOrElse {
           st.log.error("No version specified, rerun with `-Dversion=x.y.z`")
           sys.exit(1)
@@ -46,7 +45,10 @@ lazy val root = Project(id = "sangria-codegen-root", base = file("."))
       pushChanges
     ) ++ postReleaseSteps.value,
     // Ignore the macro part when generating the API docs with sbt-unidoc
-    sources in (ScalaUnidoc, unidoc) ~= { _.filter(_.getName != "GraphQLDomain.scala") }
+    sources in (ScalaUnidoc, unidoc) ~= {
+      _.filter(_.getName != "GraphQLDomain.scala")
+        .filter(_.getName != "SangriaCodegenPlugin.scala")
+    }
   )
 
 val codegen = project("sangria-codegen")
