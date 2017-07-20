@@ -111,6 +111,22 @@ object Main extends CommandApp[Command] {
   override val appVersion = BuildInfo.version
   override val progName   = "sangria-codegen"
 
+  override def helpAsked(): Unit = usageAsked()
+
+  override def usageAsked(): Unit = {
+    println(beforeCommandMessages.usageMessage)
+    println()
+    println(s"Available commands: ${commands.mkString(", ")}")
+    commands.foreach { command =>
+      val messages = commandsMessages.messagesMap(command)
+      println()
+      println(s"Command: $command ${messages.argsNameOption.map("<" + _ + ">").mkString}")
+      println()
+      println(caseapp.core.Messages.optionsMessage(messages.args))
+    }
+    exit(0)
+  }
+
   override def run(command: Command, args: RemainingArgs): Unit = {
     command.run(args.args).left.foreach { failure =>
       System.err.println(failure.getMessage)
