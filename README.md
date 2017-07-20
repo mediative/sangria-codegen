@@ -13,13 +13,15 @@ Inspired by [apollo-codegen](https://github.com/apollographql/apollo-codegen) an
 trying to fix
 [sangria-graphql/sangria#64](https://github.com/sangria-graphql/sangria/issues/64).
 
+⚠️ *This project is still in early stages of development.* ⚠️
+
 ## Getting Started
 
 Add the following to your `build.sbt`:
 
 ```sbt
 resolvers += Resolver.bintrayRepo("mediative", "maven")
-libraryDependencies += "com.mediative" %% "sangria-codegen" % "0.0.1"
+libraryDependencies += "com.mediative" %% "sangria-codegen" % "0.0.4"
 ```
 
 ## Documentation
