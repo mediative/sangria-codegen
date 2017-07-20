@@ -66,19 +66,53 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.mediative.sangria.codegen.cli.Config" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ConfigextendsProductwithSerializable"></a>
-      <a id="Config:Config"></a>
+              <ol><li name="com.mediative.sangria.codegen.cli.Command" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CommandextendsAnyRef"></a>
+      <a id="Command:Command"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Command.html"><span class="name">Command</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.package@CommandextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.mediative.sangria.codegen.cli.Generate" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenerateextendsCommandwithProductwithSerializable"></a>
+      <a id="Generate:Generate"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Config.html"><span class="name">Config</span></a><span class="params">(<span name="command">command: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;default&quot;</span></span>, <span name="schema">schema: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="java.io.File">File</span>] = <span class="symbol"><span class="name"><a href="../../../../../scala/package.html">None</a></span></span></span>, <span name="object">object: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;SangriaCodegen&quot;</span></span>, <span name="package">package: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol"><span class="name"><a href="../../../../../scala/package.html">None</a></span></span></span>, <span name="output">output: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="java.io.File">File</span>] = <span class="symbol"><span class="name"><a href="../../../../../scala/package.html">None</a></span></span></span>, <span name="files">files: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="java.io.File">File</span>] = <span class="symbol">Seq.empty</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+        <a href="Generate.html"><span class="name">Generate</span></a><span class="params">(<span name="schema">schema: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;schema.graphql&quot;</span></span>, <span name="object">object: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;SangriaCodegen&quot;</span></span>, <span name="package">package: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol"><span class="name"><a href="../../../../../scala/package.html">None</a></span></span></span>, <span name="output">output: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol"><span class="name"><a href="../../../../../scala/package.html">None</a></span></span></span>)</span><span class="result"> extends <a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a> with <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.package@ConfigextendsProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.package@GenerateextendsCommandwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.mediative.sangria.codegen.cli.PrintSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PrintSchemaextendsCommandwithProductwithSerializable"></a>
+      <a id="PrintSchema:PrintSchema"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="PrintSchema.html"><span class="name">PrintSchema</span></a><span class="params">(<span name="schema">schema: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;schema.json&quot;</span></span>, <span name="output">output: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol"><span class="name"><a href="../../../../../scala/package.html">None</a></span></span></span>)</span><span class="result"> extends <a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a> with <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.package@PrintSchemaextendsCommandwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -116,7 +150,7 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Main$.html"><span class="name">Main</span></a>
+        <a href="Main$.html"><span class="name">Main</span></a><span class="result"> extends <span class="extype" name="caseapp.CommandApp">CommandApp</span>[<a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.package@Main" title="Permalink" target="_top">

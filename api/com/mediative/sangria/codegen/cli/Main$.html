@@ -45,13 +45,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Main</span>
+        <span class="name">Main</span><span class="result"> extends <span class="extype" name="caseapp.CommandApp">CommandApp</span>[<a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a>]</span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/mediative/sangria-codegen/tree/master/sangria-codegen-cli/src/main/scala/com.mediative.sangria.codegen.cli/Main.scala" target="_blank">Main.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="caseapp.CommandApp">CommandApp</span>[<a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a>], <span class="extype" name="caseapp.CommandAppWithPreCommand">CommandAppWithPreCommand</span>[<span class="extype" name="caseapp.core.DefaultBaseCommand">DefaultBaseCommand</span>, <a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a>], <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -69,7 +69,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.mediative.sangria.codegen.cli.Main"><span>Main</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.mediative.sangria.codegen.cli.Main"><span>Main</span></li><li class="in" name="caseapp.CommandApp"><span>CommandApp</span></li><li class="in" name="caseapp.CommandAppWithPreCommand"><span>CommandAppWithPreCommand</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -145,6 +145,40 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.mediative.sangria.codegen.cli.Main#appName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="appName:String"></a>
+      <a id="appName:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">appName</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@appName:String" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.mediative.sangria.codegen.cli.Main">Main</a> → CommandAppWithPreCommand</dd></dl></div>
+    </li><li name="com.mediative.sangria.codegen.cli.Main#appVersion" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="appVersion:String"></a>
+      <a id="appVersion:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">appVersion</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@appVersion:String" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.mediative.sangria.codegen.cli.Main">Main</a> → CommandAppWithPreCommand</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -162,6 +196,57 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="caseapp.CommandApp#beforeCommand" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="beforeCommand(options:caseapp.core.DefaultBaseCommand,remainingArgs:Seq[String]):Unit"></a>
+      <a id="beforeCommand(DefaultBaseCommand,Seq[String]):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">beforeCommand</span><span class="params">(<span name="options">options: <span class="extype" name="caseapp.core.DefaultBaseCommand">DefaultBaseCommand</span></span>, <span name="remainingArgs">remainingArgs: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@beforeCommand(options:caseapp.core.DefaultBaseCommand,remainingArgs:Seq[String]):Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandApp → CommandAppWithPreCommand</dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#beforeCommandMessages" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="beforeCommandMessages:caseapp.core.Messages[D]"></a>
+      <a id="beforeCommandMessages:Messages[DefaultBaseCommand]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">beforeCommandMessages</span><span class="result">: <span class="extype" name="caseapp.core.Messages">Messages</span>[<span class="extype" name="caseapp.core.DefaultBaseCommand">DefaultBaseCommand</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@beforeCommandMessages:caseapp.core.Messages[D]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#beforeCommandParser" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="beforeCommandParser:caseapp.Parser[D]"></a>
+      <a id="beforeCommandParser:Parser[DefaultBaseCommand]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">beforeCommandParser</span><span class="result">: <span class="extype" name="caseapp.Parser">Parser</span>[<span class="extype" name="caseapp.core.DefaultBaseCommand">DefaultBaseCommand</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@beforeCommandParser:caseapp.Parser[D]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -185,6 +270,91 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#commandHelpAsked" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="commandHelpAsked(command:&lt;?&gt;):Unit"></a>
+      <a id="commandHelpAsked(String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">commandHelpAsked</span><span class="params">(<span name="command">command: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@commandHelpAsked(command:String):Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#commandParser" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="commandParser:caseapp.CommandParser[T]"></a>
+      <a id="commandParser:CommandParser[Command]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">commandParser</span><span class="result">: <span class="extype" name="caseapp.CommandParser">CommandParser</span>[<a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@commandParser:caseapp.CommandParser[T]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#commandUsageAsked" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="commandUsageAsked(command:&lt;?&gt;):Unit"></a>
+      <a id="commandUsageAsked(String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">commandUsageAsked</span><span class="params">(<span name="command">command: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@commandUsageAsked(command:String):Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#commands" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="commands:Seq[String]"></a>
+      <a id="commands:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">commands</span><span class="result">: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@commands:Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#commandsMessages" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="commandsMessages:caseapp.core.CommandsMessages[T]"></a>
+      <a id="commandsMessages:CommandsMessages[Command]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">commandsMessages</span><span class="result">: <span class="extype" name="caseapp.core.CommandsMessages">CommandsMessages</span>[<a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@commandsMessages:caseapp.core.CommandsMessages[T]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -219,6 +389,40 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#error" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="error(message:&lt;?&gt;):Unit"></a>
+      <a id="error(String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">error</span><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@error(message:String):Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#exit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="exit(code:&lt;?&gt;):Unit"></a>
+      <a id="exit(Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">exit</span><span class="params">(<span name="code">code: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@exit(code:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -242,23 +446,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.mediative.sangria.codegen.cli.Main#generate" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="generate(config:com.mediative.sangria.codegen.cli.Config):com.mediative.sangria.codegen.Result[Unit]"></a>
-      <a id="generate(Config):Result[Unit]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">generate</span><span class="params">(<span name="config">config: <a href="Config.html" class="extype" name="com.mediative.sangria.codegen.cli.Config">Config</a></span>)</span><span class="result">: <a href="../package.html#Result[T]=Either[com.mediative.sangria.codegen.Failure,T]" class="extmbr" name="com.mediative.sangria.codegen.Result">Result</a>[<a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@generate(config:com.mediative.sangria.codegen.cli.Config):com.mediative.sangria.codegen.Result[Unit]" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -293,6 +480,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#helpAsked" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="helpAsked():Unit"></a>
+      <a id="helpAsked():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">helpAsked</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@helpAsked():Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -310,8 +514,8 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.mediative.sangria.codegen.cli.Main#main" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="main(args:Array[String]):Unit"></a>
+    </li><li name="caseapp.CommandAppWithPreCommand#main" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="main(args:&lt;?&gt;):Unit"></a>
       <a id="main(Array[String]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -326,7 +530,7 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -378,23 +582,40 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.mediative.sangria.codegen.cli.Main#parser" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="parser:scopt.OptionParser[com.mediative.sangria.codegen.cli.Config]"></a>
-      <a id="parser:OptionParser[Config]"></a>
+    </li><li name="com.mediative.sangria.codegen.cli.Main#progName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="progName:String"></a>
+      <a id="progName:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">parser</span><span class="result">: <span class="extype" name="scopt.OptionParser">OptionParser</span>[<a href="Config.html" class="extype" name="com.mediative.sangria.codegen.cli.Config">Config</a>]</span>
+        <span class="name">progName</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@parser:scopt.OptionParser[com.mediative.sangria.codegen.cli.Config]" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@progName:String" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.mediative.sangria.codegen.cli.Main">Main</a> → CommandAppWithPreCommand</dd></dl></div>
+    </li><li name="com.mediative.sangria.codegen.cli.Main#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run(command:com.mediative.sangria.codegen.cli.Command,args:caseapp.RemainingArgs):Unit"></a>
+      <a id="run(Command,RemainingArgs):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="params">(<span name="command">command: <a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a></span>, <span name="args">args: <span class="extype" name="caseapp.RemainingArgs">RemainingArgs</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@run(command:com.mediative.sangria.codegen.cli.Command,args:caseapp.RemainingArgs):Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.mediative.sangria.codegen.cli.Main">Main</a> → CommandAppWithPreCommand</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -429,6 +650,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="caseapp.CommandAppWithPreCommand#usageAsked" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="usageAsked():Unit"></a>
+      <a id="usageAsked():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">usageAsked</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.mediative.sangria.codegen.cli.Main$@usageAsked():Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandAppWithPreCommand</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -507,7 +745,11 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="caseapp.CommandApp">
+              <h3>Inherited from <span class="extype" name="caseapp.CommandApp">CommandApp</span>[<a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a>]</h3>
+            </div><div class="parent" name="caseapp.CommandAppWithPreCommand">
+              <h3>Inherited from <span class="extype" name="caseapp.CommandAppWithPreCommand">CommandAppWithPreCommand</span>[<span class="extype" name="caseapp.core.DefaultBaseCommand">DefaultBaseCommand</span>, <a href="Command.html" class="extype" name="com.mediative.sangria.codegen.cli.Command">Command</a>]</h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
