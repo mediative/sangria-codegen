@@ -34,6 +34,9 @@ object Tree {
     def +(that: Selection) =
       Selection((this.fields ++ that.fields).distinct, this.interfaces ++ that.interfaces)
   }
+  object Selection {
+    final val empty = Selection(Vector.empty)
+  }
   case class Interface(name: String, fields: Seq[Field[Ref]]) extends OutputType
   case class Enum(name: String, vaules: Seq[String])          extends OutputType
   case class Operation(name: Option[String], variables: Seq[Field[Ref]], selection: Selection)

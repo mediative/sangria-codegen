@@ -57,6 +57,9 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       outputName.getOrElse(t.namedType.name)
   }
 
+  def generateSelections(selections: Seq[ast.Selection]): Tree.Selection =
+    selections.map(generateSelection).foldLeft(Tree.Selection.empty)(_ + _)
+
   def generateSelection(node: ast.AstNode): Tree.Selection = {
     typeInfo.enter(node)
     val result = node match {
@@ -68,20 +71,17 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
 
           case _ =>
             val name = field.outputName
-            val gen  = field.selections.map(generateSelection).reduce(_ + _)
+            val gen  = generateSelections(field.selections)
             Tree.Selection(Vector(Tree.Field(name, gen)))
         }
 
       case fragmentSpread: ast.FragmentSpread =>
         val name     = fragmentSpread.name
         val fragment = document.fragments(fragmentSpread.name)
-        fragment.selections
-          .map(generateSelection)
-          .reduce(_ + _)
-          .copy(interfaces = Vector(name))
+        generateSelections(fragment.selections).copy(interfaces = Vector(name))
 
       case inlineFragment: ast.InlineFragment =>
-        inlineFragment.selections.map(generateSelection).reduce(_ + _)
+        generateSelections(inlineFragment.selections)
 
       case unknown =>
         sys.error("Unknown selection: " + unknown.toString)
@@ -97,14 +97,14 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     }
 
     typeInfo.enter(operation)
-    val selection = operation.selections.map(generateSelection).reduce(_ + _)
+    val selection = generateSelections(operation.selections)
     typeInfo.leave(operation)
     Tree.Operation(operation.name, variables, selection)
   }
 
   def generateFragment(fragment: ast.FragmentDefinition): Tree.Interface = {
     typeInfo.enter(fragment)
-    val selection = fragment.selections.map(generateSelection).reduce(_ + _)
+    val selection = generateSelections(fragment.selections)
     typeInfo.leave(fragment)
     val fields = selection.fields.collect {
       case tree @ Tree.Field(name, Tree.Ref(tpe)) => Tree.Field(name, Tree.Ref(tpe))
