@@ -1,9 +1,13 @@
+import ReleaseKeys._
+import ReleaseTransformations._
+
 Jvm.`1.8`.required
 
 inThisBuild(
   Def.settings(
     organization := "com.mediative",
     scalaVersion := "2.11.11",
+    crossScalaVersions := Seq(scalaVersion.value, "2.12.2"),
     scalacOptions += "-Ywarn-unused-import",
     publishArtifact in (Compile, packageDoc) := false,
     publishArtifact in (Compile, packageSrc) := false,
@@ -20,11 +24,27 @@ lazy val macroAnnotationSettings = Seq(
 )
 
 lazy val root = Project(id = "sangria-codegen-root", base = file("."))
-  .enablePlugins(MediativeGitHubPlugin, MediativeReleasePlugin)
+  .enablePlugins(MediativeGitHubPlugin, MediativeReleasePlugin, CrossPerProjectPlugin)
   .aggregate(codegen, cli, sbtPlugin)
-  .settings(noPublishSettings)
   .settings(
     noPublishSettings,
+    releaseCrossBuild := false,
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      { st: State =>
+        val v = sys.props.get("version").getOrElse {
+          st.log.error("No version specified, rerun with `-Dversion=x.y.z`")
+          sys.exit(1)
+        }
+        st.put(versions, (v, v))
+      },
+      runClean,
+      releaseStepCommandAndRemaining("+test"),
+      setReleaseVersion,
+      tagRelease,
+      releaseStepCommandAndRemaining("+publish"),
+      pushChanges
+    ) ++ postReleaseSteps.value,
     // Ignore the macro part when generating the API docs with sbt-unidoc
     sources in (ScalaUnidoc, unidoc) ~= { _.filter(_.getName != "GraphQLDomain.scala") }
   )
@@ -59,6 +79,7 @@ val sbtPlugin = project("sbt-sangria-codegen")
   .enablePlugins(MediativeBintrayPlugin, BuildInfoPlugin)
   .settings(
     scalaVersion := "2.10.6",
+    crossScalaVersions := Seq(scalaVersion.value),
     scalacOptions ~= { _.filterNot(Set("-Ywarn-unused-import")) },
     publishLocal := publishLocal
       .dependsOn(publishLocal in codegen)
