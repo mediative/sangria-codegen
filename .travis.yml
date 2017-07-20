@@ -8,7 +8,7 @@ jdk: oraclejdk8
 
 script:
   - bin/scalafmt --test
-  - sbt ++$TRAVIS_SCALA_VERSION test
+  - sbt test
 
 before_cache:
   # See http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
