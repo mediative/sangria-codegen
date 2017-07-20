@@ -54,7 +54,6 @@ case class Generate(
     output: Option[String] = None
 ) extends Command {
   def run(args: Seq[String]): Result[Unit] = {
-    val stdout    = outputStream(output)
     val generator = ScalametaGenerator(`object`)
     val files     = args.map(path => new File(path))
 
@@ -62,11 +61,13 @@ case class Generate(
       .withQuery(files: _*)
       .generate(generator)
       .map { code =>
+        val stdout = outputStream(output)
         `package`.foreach { packageName =>
           stdout.println(s"package $packageName\n")
           stdout.println()
         }
         stdout.println(code.show[Syntax])
+        stdout.close()
       }
   }
 }
@@ -79,14 +80,13 @@ case class PrintSchema(
     @ValueDescription("path")
     output: Option[String] = None
 ) extends Command {
-  def run(args: Seq[String]): Result[Unit] = {
-    val stdout = outputStream(output)
-
+  def run(args: Seq[String]): Result[Unit] =
     parseIntrospectionSchema(new File(schema))
       .map { schema =>
+        val stdout = outputStream(output)
         stdout.println(schema.renderPretty)
+        stdout.close()
       }
-  }
 
   def parseIntrospectionSchema(schemaFile: File): Result[Schema[_, _]] =
     for {
