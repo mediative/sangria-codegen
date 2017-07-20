@@ -34,6 +34,29 @@ class MainSpec extends WordSpec with BeforeAndAfter {
   def contentOf(file: File) =
     Source.fromFile(file).mkString
 
+  "sangria-codegen generate" should {
+    "generate Scala code" in {
+      val schemaPath = new File(testDir, "schema.graphql").getAbsolutePath
+      val query      = new File(testDir, "HeroNameQuery.graphql")
+      val output     = new File(outputDir, "subdir/HeroNameQuery.scala")
+      val command    = Generate(
+        schema = schemaPath,
+        `object` = "HeroNameQuery",
+        output = Some(output.getAbsolutePath)
+      )
+      val Right(_)   = command.run(Seq(query.getAbsolutePath))
+
+      val expected = new File(testDir, "HeroNameQuery.scala")
+      assert(contentOf(output) == contentOf(expected))
+    }
+
+    "fail if --schema file does not exist" in {
+      val command     = Generate(schema = "does-not-exist.graphql")
+      val Left(error) = command.run(Seq.empty)
+      assert(error.getMessage.startsWith("Failed to read does-not-exist.graphql"))
+    }
+  }
+
   "sangria-codegen print-schema" should {
     "pretty-print result of instrospection query in the GraphQL schema language format" in {
       val schemaPath = new File(testDir, "schema.json").getAbsolutePath
