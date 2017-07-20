@@ -37,7 +37,7 @@ class MainSpec extends WordSpec with BeforeAndAfter {
   "sangria-codegen print-schema" should {
     "pretty-print result of instrospection query in the GraphQL schema language format" in {
       val schemaPath = new File(testDir, "schema.json").getAbsolutePath
-      val output     = new File(outputDir, "schema.graphql")
+      val output     = new File(outputDir, "subdir/schema.graphql")
       val command    = PrintSchema(schema = schemaPath, output = Some(output.getAbsolutePath))
       val Right(_)   = command.run(Seq.empty)
 

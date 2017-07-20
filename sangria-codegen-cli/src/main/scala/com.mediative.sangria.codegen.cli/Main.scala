@@ -27,8 +27,16 @@ import cats.syntax.either._
 
 sealed trait Command {
   def run(args: Seq[String]): Result[Unit]
-  def outputStream(path: Option[String]): PrintStream =
-    path.map(file => new PrintStream(file)).getOrElse(System.out)
+
+  def outputStream(pathOpt: Option[String]): PrintStream =
+    pathOpt match {
+      case None | Some("-") =>
+        System.out
+      case Some(path) =>
+        val file = new File(path)
+        file.getParentFile.mkdirs()
+        new PrintStream(file)
+    }
 }
 
 case class Generate(
