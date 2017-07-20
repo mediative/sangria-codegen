@@ -24,7 +24,11 @@ lazy val macroAnnotationSettings = Seq(
 )
 
 lazy val root = Project(id = "sangria-codegen-root", base = file("."))
-  .enablePlugins(MediativeGitHubPlugin, MediativeReleasePlugin, CrossPerProjectPlugin)
+  .enablePlugins(
+    MediativeGitHubPlugin,
+    MediativeReleasePlugin,
+    CrossPerProjectPlugin,
+    SiteScaladocPlugin)
   .aggregate(codegen, cli, sbtPlugin)
   .settings(
     noPublishSettings,
@@ -45,10 +49,14 @@ lazy val root = Project(id = "sangria-codegen-root", base = file("."))
       pushChanges
     ) ++ postReleaseSteps.value,
     // Ignore the macro part when generating the API docs with sbt-unidoc
-    sources in (ScalaUnidoc, unidoc) ~= {
-      _.filter(_.getName != "GraphQLDomain.scala")
-        .filter(_.getName != "SangriaCodegenPlugin.scala")
-    }
+    sources in (ScalaUnidoc, unidoc) ~= { _.filter(_.getName != "GraphQLDomain.scala") },
+    // Separate API docs for the sbt-plugin
+    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(sbtPlugin),
+    siteSubdirName in (sbtPlugin, SiteScaladoc) := "sbt-plugin",
+    addMappingsToSiteDir(
+      mappings in (sbtPlugin, Compile, packageDoc),
+      siteSubdirName in (sbtPlugin, SiteScaladoc)
+    )
   )
 
 val codegen = project("sangria-codegen")
