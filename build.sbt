@@ -100,7 +100,7 @@ val sbtPlugin = project("sbt-sangria-codegen")
     scriptedSettings,
     // scriptedBufferLog := false,
     scriptedLaunchOpts += "-Dproject.version=" + version.value,
-    buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion),
+    buildInfoKeys := Seq[BuildInfoKey](version),
     buildInfoPackage := "com.mediative.sangria.codegen.sbt"
   )
 
