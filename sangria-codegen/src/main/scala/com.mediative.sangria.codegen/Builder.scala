@@ -25,25 +25,22 @@ import sangria.ast.Document
 
 case class Builder private (
     schema: Result[Schema[_, _]],
-    document: Result[Document] = Right(Document.emptyStub)
+    document: Result[Document] = Builder.emptyDocumentResult
 ) {
-  private def withQuery(query: Result[Document]): Builder = {
-    val merged =
-      document.right.flatMap { doc =>
-        if (doc == Document.emptyStub) query
-        else query.right.map(doc.merge)
-      }
-    copy(document = merged)
-  }
+  private def withQuery(query: => Result[Document]): Builder =
+    if (document == Builder.emptyDocumentResult)
+      copy(document = query)
+    else
+      copy(document = document.flatMap(doc => query.map(doc.merge)))
 
   def withQuery(query: Document): Builder =
     withQuery(Right(query))
 
-  def withQuery(queryFiles: File*): Builder = {
-    import cats.implicits._
-    val document = queryFiles.map(Builder.parseDocument).toList.sequenceU.map(_.reduce(_ + _))
-    withQuery(document)
-  }
+  def withQuery(queryFiles: File*): Builder =
+    queryFiles.foldLeft(this) {
+      case (builder, file) =>
+        builder.withQuery(Builder.parseDocument(file))
+    }
 
   def generate[T](implicit generator: Generator[T]): Result[T] =
     for {
@@ -57,6 +54,8 @@ case class Builder private (
 object Builder {
   def apply(schema: Schema[_, _]): Builder = new Builder(Right(schema))
   def apply(schemaFile: File): Builder     = new Builder(parseSchema(schemaFile))
+
+  private val emptyDocumentResult: Result[Document] = Right(Document.emptyStub)
 
   private def parseSchema(file: File): Result[Schema[_, _]] =
     for {
