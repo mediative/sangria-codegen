@@ -27,7 +27,7 @@ libraryDependencies += "com.mediative" %% "sangria-codegen" % "0.0.4"
 ## Documentation
 
  - [API](https://mediative.github.io/sangria-codegen/api/#com.mediative.sangria.codegen.package)
- - [sbt-plugin](https://mediative.github.io/sangria-codegen/sbt-plugin/#com.mediative.sangria.codegen.sbt.package)
+ - [sbt-plugin](https://mediative.github.io/sangria-codegen/sbt-plugin/#com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin$)
 
 ## Building and Testing
 
