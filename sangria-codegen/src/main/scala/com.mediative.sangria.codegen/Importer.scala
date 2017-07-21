@@ -36,6 +36,20 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
           .toVector
       ))
 
+  def touchType(tpe: Type): Unit = tpe match {
+    case OptionType(wrapped) =>
+      touchType(wrapped)
+    case ListType(wrapped) =>
+      touchType(wrapped)
+    case scalar: ScalarType[_] =>
+    // Nothing
+    case outputType: OutputType[_] =>
+      outputTypes += outputType
+      ()
+    case t: Type =>
+    // FIXME: generate input types
+  }
+
   def isObjectLike(tpe: sangria.schema.Type): Boolean = tpe match {
     case OptionType(wrapped)       => isObjectLike(wrapped)
     case ListType(wrapped)         => isObjectLike(wrapped)
@@ -43,18 +57,14 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     case _                         => false
   }
 
-  def getScalaType(outputName: Option[String], tpe: Type): String = tpe match {
-    case OptionType(wrapped) =>
-      s"Option[${getScalaType(outputName, wrapped)}]"
-    case scalar: ScalarType[_] =>
-      scalar.name
-    case ListType(wrapped) =>
-      s"List[${getScalaType(outputName, wrapped)}]"
-    case outputType: OutputType[_] =>
-      outputTypes += outputType
-      outputName.getOrElse(outputType.namedType.name)
-    case t: Type =>
-      outputName.getOrElse(t.namedType.name)
+  def generateField(
+      touch: Boolean,
+      name: String,
+      tpe: Type,
+      selection: Option[Tree.Selection] = None): Tree.Field = {
+    if (touch)
+      touchType(tpe)
+    Tree.Field(name, tpe, selection)
   }
 
   def generateSelections(selections: Seq[ast.Selection]): Tree.Selection =
@@ -66,13 +76,14 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       case field: ast.Field =>
         typeInfo.tpe match {
           case Some(tpe) if !isObjectLike(tpe) =>
-            val name = getScalaType(None, tpe)
-            Tree.Selection(Vector(Tree.Field(field.outputName, Tree.Ref(name))))
+            Tree.Selection(Vector(generateField(touch = true, field.outputName, tpe)))
+
+          case Some(tpe) =>
+            val gen = generateSelections(field.selections)
+            Tree.Selection(Vector(generateField(touch = false, field.outputName, tpe, Some(gen))))
 
           case _ =>
-            val name = field.outputName
-            val gen  = generateSelections(field.selections)
-            Tree.Selection(Vector(Tree.Field(name, gen)))
+            sys.error("Field without type: " + field)
         }
 
       case fragmentSpread: ast.FragmentSpread =>
@@ -93,7 +104,7 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
   def generateOperation(operation: ast.OperationDefinition): Tree.Operation = {
     val variables = operation.variables.toVector.map { varDef =>
       val tpe = schema.getOutputType(varDef.tpe, topLevel = true).get
-      Tree.Field(varDef.name, Tree.Ref(getScalaType(None, tpe)))
+      generateField(touch = false, varDef.name, tpe)
     }
 
     typeInfo.enter(operation)
@@ -106,25 +117,19 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     typeInfo.enter(fragment)
     val selection = generateSelections(fragment.selections)
     typeInfo.leave(fragment)
-    val fields = selection.fields.collect {
-      case tree @ Tree.Field(name, Tree.Ref(tpe)) => Tree.Field(name, Tree.Ref(tpe))
-      case tree @ Tree.Field(name, _)             => Tree.Field(name, Tree.Ref(name.capitalize))
-    }
-    Tree.Interface(fragment.name, fields)
+    Tree.Interface(fragment.name, selection.fields)
   }
 
   def generateType[T](tpe: OutputType[T]): Option[Tree.Type] = tpe match {
     case interface: InterfaceType[_, _] =>
       val fields = interface.uniqueFields.map { field =>
-        val tpe = getScalaType(Some(field.fieldType.namedType.name), field.fieldType)
-        Tree.Field(field.name, Tree.Ref(tpe))
+        generateField(touch = true, field.name, field.fieldType)
       }
       Some(Tree.Interface(interface.name, fields))
 
     case obj: ObjectLikeType[_, _] =>
       val fields = obj.uniqueFields.map { field =>
-        val tpe = getScalaType(None, field.fieldType)
-        Tree.Field(field.name, Tree.Ref(tpe))
+        generateField(touch = true, field.name, field.fieldType)
       }
       Some(Tree.Object(obj.name, fields))
 

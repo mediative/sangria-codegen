@@ -48,20 +48,22 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
 
   def generateOperation(operation: Tree.Operation): Seq[Stat] = {
     def generateSelectionParams(prefix: String)(selection: Tree.Selection): Seq[Term.Param] =
-      selection.fields.map {
-        case Tree.Field(name, Tree.Ref(tpe)) =>
-          termParam(name, tpe)
-
-        case Tree.Field(name, _) =>
-          termParam(name, prefix + name.capitalize)
+      selection.fields.map { field =>
+        val tpe = field.scalaType { tpe =>
+          if (field.isObjectLike)
+            prefix + field.name.capitalize
+          else
+            tpe.namedType.name
+        }
+        termParam(field.name, tpe)
       }
 
     def generateSelectionStats(prefix: String)(selection: Tree.Selection): Seq[Stat] =
       selection.fields.flatMap {
-        case Tree.Field(name, Tree.Ref(tpe)) =>
+        case Tree.Field(_, _, None) =>
           Vector.empty
 
-        case Tree.Field(name, selection: Tree.Selection) =>
+        case Tree.Field(name, tpe, Some(selection)) =>
           val stats  = generateSelectionStats(prefix + name.capitalize + ".")(selection)
           val params = generateSelectionParams(prefix + name.capitalize + ".")(selection)
 
@@ -81,7 +83,7 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
       }
 
     val variables = operation.variables.map { varDef =>
-      termParam(varDef.name, varDef.tpe.name)
+      termParam(varDef.name, varDef.scalaType(_.namedType.name))
     }
 
     val name   = operation.name.getOrElse(sys.error("found unnamed operation"))
@@ -106,7 +108,7 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
   def generateInterface(interface: Tree.Interface): Stat = {
     val defs = interface.fields.map { field =>
       val fieldName = Term.Name(field.name)
-      val tpeName   = Type.Name(field.tpe.name)
+      val tpeName   = Type.Name(field.scalaType(_.namedType.name))
       q"def $fieldName: $tpeName"
     }
     val traitName = Type.Name(interface.name)
@@ -118,7 +120,7 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
       Right(Vector(generateInterface(interface)))
 
     case Tree.Object(name, fields) =>
-      val params    = fields.map(field => termParam(field.name, field.tpe.name))
+      val params    = fields.map(field => termParam(field.name, field.scalaType(_.namedType.name)))
       val className = Type.Name(name)
       // FIXME: val interfaces = obj.interfaces.
       Right(Vector(q"case class $className(..$params)": Stat))

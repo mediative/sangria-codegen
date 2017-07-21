@@ -17,16 +17,31 @@
 package com.mediative.sangria.codegen
 
 import scala.collection.immutable.Seq
+import sangria.schema
 
 /**
  * AST representing the extracted GraphQL types.
  */
 sealed trait Tree
 object Tree {
-  case class Ref(name: String)                      extends Tree
-  case class Field[T <: Tree](name: String, tpe: T) extends Tree
-  case class Selection(fields: Seq[Field[Tree]], interfaces: Seq[String] = Vector.empty)
+  case class Field(name: String, tpe: schema.Type, selection: Option[Selection] = None)
       extends Tree {
+    def isObjectLike = selection.nonEmpty
+    def scalaType(genName: schema.Type => String): String = {
+      def typeOf(tpe: schema.Type): String = tpe match {
+        case schema.OptionType(wrapped) =>
+          s"Option[${typeOf(wrapped)}]"
+        case scalar: schema.ScalarType[_] =>
+          scalar.name
+        case schema.ListType(wrapped) =>
+          s"List[${typeOf(wrapped)}]"
+        case tpe: schema.Type =>
+          genName(tpe)
+      }
+      typeOf(tpe)
+    }
+  }
+  case class Selection(fields: Seq[Field], interfaces: Seq[String] = Vector.empty) extends Tree {
     def +(that: Selection) =
       Selection((this.fields ++ that.fields).distinct, this.interfaces ++ that.interfaces)
   }
@@ -37,7 +52,7 @@ object Tree {
   /**
    * Operations represent API calls and are the entry points to the API.
    */
-  case class Operation(name: Option[String], variables: Seq[Field[Ref]], selection: Selection)
+  case class Operation(name: Option[String], variables: Seq[Field], selection: Selection)
       extends Tree
 
   /**
@@ -46,9 +61,9 @@ object Tree {
   sealed trait Type extends Tree {
     def name: String
   }
-  case class Object(name: String, fields: Seq[Field[Ref]])    extends Type
-  case class Interface(name: String, fields: Seq[Field[Ref]]) extends Type
-  case class Enum(name: String, vaules: Seq[String])          extends Type
+  case class Object(name: String, fields: Seq[Field])    extends Type
+  case class Interface(name: String, fields: Seq[Field]) extends Type
+  case class Enum(name: String, vaules: Seq[String])     extends Type
 
   /**
    * The API based on one or more GraphQL query documents using a given schema.
