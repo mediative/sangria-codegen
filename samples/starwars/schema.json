@@ -45,20 +45,12 @@
               "description": "The friends of the character, or an empty list if they have none.",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
+                "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INTERFACE",
-                      "name": "Character",
-                      "ofType": null
-                    }
-                  }
+                  "kind": "INTERFACE",
+                  "name": "Character",
+                  "ofType": null
                 }
               },
               "isDeprecated": false,
@@ -76,6 +68,18 @@
                   "name": "Episode",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "secretBackstory",
+              "description": "Where are they from and how they came to be who they are.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -135,20 +139,12 @@
               "description": "The friends of the droid, or an empty list if they have none.",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
+                "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INTERFACE",
-                      "name": "Character",
-                      "ofType": null
-                    }
-                  }
+                  "kind": "INTERFACE",
+                  "name": "Character",
+                  "ofType": null
                 }
               },
               "isDeprecated": false,
@@ -173,6 +169,18 @@
             {
               "name": "primaryFunction",
               "description": "The primary function of the droid.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "secretBackstory",
+              "description": "Where are they from and how they came to be who they are.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -261,20 +269,12 @@
               "description": "The friends of the human, or an empty list if they have none.",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
+                "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INTERFACE",
-                      "name": "Character",
-                      "ofType": null
-                    }
-                  }
+                  "kind": "INTERFACE",
+                  "name": "Character",
+                  "ofType": null
                 }
               },
               "isDeprecated": false,
@@ -299,6 +299,18 @@
             {
               "name": "homePlanet",
               "description": "The home planet of the human, or null if unknown.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "secretBackstory",
+              "description": "Where are they from and how they came to be who they are.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -349,8 +361,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": true,
-              "deprecationReason": "Use `human` or `droid` fields instead"
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "human",

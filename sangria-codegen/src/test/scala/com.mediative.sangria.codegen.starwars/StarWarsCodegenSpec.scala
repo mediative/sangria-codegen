@@ -25,17 +25,17 @@ import scala.meta._
 class StarWarsCodegenSpec extends WordSpec {
   import TestSchema.StarWarsSchema
 
-  val inputDirectory = new File("src/test/resources/starwars")
-  val generator      = ScalametaGenerator("CodegenResult")
+  val inputDir  = new File("../samples/starwars")
+  val generator = ScalametaGenerator("CodegenResult")
 
   def contentOf(file: File) =
     Source.fromFile(file).mkString
 
   "SangriaCodegen" should {
     for {
-      input <- inputDirectory.listFiles()
+      input <- inputDir.listFiles()
       if input.getName.endsWith(".graphql")
-      expected = new File(inputDirectory, input.getName.replace(".graphql", ".scala"))
+      expected = new File(inputDir, input.getName.replace(".graphql", ".scala"))
       if expected.exists
     } {
       s"generate code for ${input.getName}" in {

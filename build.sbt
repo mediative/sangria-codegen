@@ -11,6 +11,7 @@ inThisBuild(
     scalacOptions += "-Ywarn-unused-import",
     publishArtifact in (Compile, packageDoc) := false,
     publishArtifact in (Compile, packageSrc) := false,
+    watchSources ++= (((baseDirectory in ThisBuild).value / "samples") ** "*").get,
     doctestTestFramework := DoctestTestFramework.ScalaTest,
     doctestWithDependencies := false
   ))

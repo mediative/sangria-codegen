@@ -46,8 +46,8 @@ class BuilderSpec extends WordSpec {
 
     "merge query documents" in {
       val Right(tree) = Builder(StarWarsSchema)
-        .withQuery(new File("src/test/resources/starwars/HeroAndFriends.graphql"))
-        .withQuery(new File("src/test/resources/starwars/HeroNameQuery.graphql"))
+        .withQuery(new File("../samples/starwars/HeroAndFriends.graphql"))
+        .withQuery(new File("../samples/starwars/HeroNameQuery.graphql"))
         .generate[Tree.Api]
 
       assert(tree.operations.flatMap(_.name) == Vector("HeroAndFriends", "HeroNameQuery"))

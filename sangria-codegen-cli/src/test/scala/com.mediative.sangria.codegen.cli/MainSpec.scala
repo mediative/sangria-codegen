@@ -22,9 +22,8 @@ import org.scalatest.{BeforeAndAfter, WordSpec}
 import scala.io.Source
 
 class MainSpec extends WordSpec with BeforeAndAfter {
-  val queryDirectory = new File("../sangria-codegen/src/test/resources/starwars")
-  val testDir        = new File("src/test/resources")
-  val outputDir      = new File("target/sangria-codegen-cli")
+  val inputDir  = new File("../samples/starwars")
+  val outputDir = new File("target/sangria-codegen-cli")
 
   before {
     Option(outputDir.listFiles()).foreach(_.foreach(_.delete()))
@@ -36,32 +35,32 @@ class MainSpec extends WordSpec with BeforeAndAfter {
 
   "sangria-codegen generate" should {
     "generate Scala code" in {
-      val schemaPath = new File(testDir, "schema.graphql").getAbsolutePath
-      val query      = new File(testDir, "HeroNameQuery.graphql")
+      val schemaPath = new File(inputDir, "schema.graphql").getAbsolutePath
+      val query      = new File(inputDir, "HeroNameQuery.graphql")
       val output     = new File(outputDir, "subdir/HeroNameQuery.scala")
       val command = Generate(
         schema = schemaPath,
-        `object` = "HeroNameQuery",
+        `object` = "CodegenResult",
         output = Some(output.getAbsolutePath)
       )
       val Right(_) = command.run(Seq(query.getAbsolutePath))
 
-      val expected = new File(testDir, "HeroNameQuery.scala")
+      val expected = new File(inputDir, "HeroNameQuery.scala")
       assert(contentOf(output) == contentOf(expected))
     }
 
     "generate Scala code using GraphQL JSON schema" in {
-      val schemaPath = new File(testDir, "schema.json").getAbsolutePath
-      val query      = new File(testDir, "HeroNameQuery.graphql")
+      val schemaPath = new File(inputDir, "schema.json").getAbsolutePath
+      val query      = new File(inputDir, "HeroNameQuery.graphql")
       val output     = new File(outputDir, "from/json/HeroNameQuery.scala")
       val command = Generate(
         schema = schemaPath,
-        `object` = "HeroNameQuery",
+        `object` = "CodegenResult",
         output = Some(output.getAbsolutePath)
       )
       val Right(_) = command.run(Seq(query.getAbsolutePath))
 
-      val expected = new File(testDir, "HeroNameQuery.scala")
+      val expected = new File(inputDir, "HeroNameQuery.scala")
       assert(contentOf(output) == contentOf(expected))
     }
 
@@ -74,12 +73,12 @@ class MainSpec extends WordSpec with BeforeAndAfter {
 
   "sangria-codegen print-schema" should {
     "pretty-print result of instrospection query in the GraphQL schema language format" in {
-      val schemaPath = new File(testDir, "schema.json").getAbsolutePath
+      val schemaPath = new File(inputDir, "schema.json").getAbsolutePath
       val output     = new File(outputDir, "subdir/schema.graphql")
       val command    = PrintSchema(schema = schemaPath, output = Some(output.getAbsolutePath))
       val Right(_)   = command.run(Seq.empty)
 
-      val expected = new File(testDir, "schema.graphql")
+      val expected = new File(inputDir, "schema.graphql")
       assert(contentOf(output) == contentOf(expected))
     }
 

@@ -27,8 +27,8 @@ class StarWarsAnnotationSpec extends WordSpec with Matchers {
       import com.mediative.sangria.codegen.GraphQLDomain
 
       @GraphQLDomain(
-        "sangria-codegen/src/test/resources/starwars/schema.graphql",
-        "sangria-codegen/src/test/resources/starwars/MultiQuery.graphql"
+        "samples/starwars/schema.graphql",
+        "samples/starwars/MultiQuery.graphql"
       )
       object StarWarsDomain
       """ should compile
