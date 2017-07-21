@@ -23,12 +23,8 @@ import scala.collection.immutable.Seq
  */
 sealed trait Tree
 object Tree {
-  sealed trait OutputType extends Tree {
-    def name: String
-  }
-  case class Ref(name: String)                             extends Tree
-  case class Field[T <: Tree](name: String, tpe: T)        extends Tree
-  case class Object(name: String, fields: Seq[Field[Ref]]) extends OutputType
+  case class Ref(name: String)                      extends Tree
+  case class Field[T <: Tree](name: String, tpe: T) extends Tree
   case class Selection(fields: Seq[Field[Tree]], interfaces: Seq[String] = Vector.empty)
       extends Tree {
     def +(that: Selection) =
@@ -37,9 +33,28 @@ object Tree {
   object Selection {
     final val empty = Selection(Vector.empty)
   }
-  case class Interface(name: String, fields: Seq[Field[Ref]]) extends OutputType
-  case class Enum(name: String, vaules: Seq[String])          extends OutputType
+
+  /**
+   * Operations represent API calls and are the entry points to the API.
+   */
   case class Operation(name: Option[String], variables: Seq[Field[Ref]], selection: Selection)
       extends Tree
-  case class Api(operations: Seq[Operation], interfaces: Seq[Interface], types: Seq[OutputType])
+
+  /**
+   * Marker trait for GraphQL input and output types.
+   */
+  sealed trait Type extends Tree {
+    def name: String
+  }
+  case class Object(name: String, fields: Seq[Field[Ref]])    extends Type
+  case class Interface(name: String, fields: Seq[Field[Ref]]) extends Type
+  case class Enum(name: String, vaules: Seq[String])          extends Type
+
+  /**
+   * The API based on one or more GraphQL query documents using a given schema.
+   *
+   * It includes only the operations, interfaces and input/output types
+   * referenced in the query documents.
+   */
+  case class Api(operations: Seq[Operation], interfaces: Seq[Interface], types: Seq[Type])
 }

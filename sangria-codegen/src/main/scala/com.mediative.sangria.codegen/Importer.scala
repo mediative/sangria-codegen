@@ -31,7 +31,7 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
         document.fragments.values.toVector.map(generateFragment),
         schema.outputTypes.values
           .filter(outputTypes)
-          .map(generateOutputType)
+          .map(generateType)
           .flatten
           .toVector
       ))
@@ -113,7 +113,7 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     Tree.Interface(fragment.name, fields)
   }
 
-  def generateOutputType[T](tpe: OutputType[T]): Option[Tree.OutputType] = tpe match {
+  def generateType[T](tpe: OutputType[T]): Option[Tree.Type] = tpe match {
     case interface: InterfaceType[_, _] =>
       val fields = interface.uniqueFields.map { field =>
         val tpe = getScalaType(Some(field.fieldType.namedType.name), field.fieldType)

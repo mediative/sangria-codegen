@@ -30,7 +30,7 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
     val operations = api.operations.flatMap(generateOperation)
     val fragments  = api.interfaces.map(generateInterface)
     for {
-      types <- api.types.map(generateOutputType).toList.sequenceU
+      types <- api.types.map(generateType).toList.sequenceU
     } yield {
       q"""
         object $moduleName {
@@ -113,7 +113,7 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
     q"trait $traitName { ..$defs }"
   }
 
-  def generateOutputType(tree: Tree.OutputType): Result[Seq[Stat]] = tree match {
+  def generateType(tree: Tree.Type): Result[Seq[Stat]] = tree match {
     case interface: Tree.Interface =>
       Right(Vector(generateInterface(interface)))
 
