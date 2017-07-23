@@ -18,20 +18,25 @@ package com.mediative.sangria.codegen
 package starwars
 
 import org.scalatest.{WordSpec, Matchers}
+import com.mediative.sangria.codegen.GraphQLDomain
+
+@GraphQLDomain(
+  "samples/starwars/schema.graphql",
+  "samples/starwars/MultiQuery.graphql"
+)
+object StarWarsDomain
 
 class StarWarsAnnotationSpec extends WordSpec with Matchers {
   "GraphQLDomain" should {
     "support the Star Wars schema and operations" in {
-      sangria.introspection.introspectionQuery
-      """
-      import com.mediative.sangria.codegen.GraphQLDomain
+      import StarWarsDomain.HeroAndFriends
 
-      @GraphQLDomain(
-        "samples/starwars/schema.graphql",
-        "samples/starwars/MultiQuery.graphql"
+      val heroAndFriends = HeroAndFriends(
+        hero = HeroAndFriends.Hero(
+          name = Some("Luke"),
+          friends = Some(List(Some(HeroAndFriends.Hero.Friends(Some("R2D2")))))
+        )
       )
-      object StarWarsDomain
-      """ should compile
     }
   }
 }
