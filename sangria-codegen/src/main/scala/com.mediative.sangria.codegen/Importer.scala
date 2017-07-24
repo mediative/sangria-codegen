@@ -21,16 +21,16 @@ import sangria.schema._
 import sangria.ast
 
 case class Importer(schema: Schema[_, _], document: ast.Document) {
-  private val typeInfo    = new TypeInfo(schema)
-  private val outputTypes = scala.collection.mutable.Set[OutputType[_]]()
+  private val typeInfo = new TypeInfo(schema)
+  private val types    = scala.collection.mutable.Set[Type]()
 
   def parse(): Result[Tree.Api] =
     Right(
       Tree.Api(
         document.operations.values.map(generateOperation).toVector,
         document.fragments.values.toVector.map(generateFragment),
-        schema.outputTypes.values
-          .filter(outputTypes)
+        schema.typeList
+          .filter(types)
           .map(generateType)
           .flatten
           .toVector
@@ -39,15 +39,17 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
   def touchType(tpe: Type): Unit = tpe match {
     case OptionType(wrapped) =>
       touchType(wrapped)
+    case OptionInputType(wrapped) =>
+      touchType(wrapped)
     case ListType(wrapped) =>
+      touchType(wrapped)
+    case ListInputType(wrapped) =>
       touchType(wrapped)
     case scalar: ScalarType[_] =>
     // Nothing
-    case outputType: OutputType[_] =>
-      outputTypes += outputType
+    case underlying @ (_: OutputType[_] | _: InputObjectType[_]) =>
+      types += underlying
       ()
-    case t: Type =>
-    // FIXME: generate input types
   }
 
   def isObjectLike(tpe: sangria.schema.Type): Boolean = tpe match {
@@ -102,12 +104,16 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
   }
 
   def generateOperation(operation: ast.OperationDefinition): Tree.Operation = {
+    typeInfo.enter(operation)
     val variables = operation.variables.toVector.map { varDef =>
-      val tpe = schema.getOutputType(varDef.tpe, topLevel = true).get
-      generateField(touch = false, varDef.name, tpe)
+      schema.getInputType(varDef.tpe) match {
+        case Some(tpe) =>
+          generateField(touch = true, varDef.name, tpe)
+        case None =>
+          sys.error("Unknown input type: " + varDef.tpe)
+      }
     }
 
-    typeInfo.enter(operation)
     val selection = generateSelections(operation.selections)
     typeInfo.leave(operation)
     Tree.Operation(operation.name, variables, selection)
@@ -120,7 +126,7 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     Tree.Interface(fragment.name, selection.fields)
   }
 
-  def generateType[T](tpe: OutputType[T]): Option[Tree.Type] = tpe match {
+  def generateType(tpe: Type): Option[Tree.Type] = tpe match {
     case interface: InterfaceType[_, _] =>
       val fields = interface.uniqueFields.map { field =>
         generateField(touch = true, field.name, field.fieldType)
@@ -138,6 +144,15 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       Some(Tree.Enum(enum.name, values))
 
     case union: UnionType[_] =>
+      None
+
+    case inputObj: InputObjectType[_] =>
+      val fields = inputObj.fields.map { field =>
+        generateField(touch = true, field.name, field.fieldType)
+      }
+      Some(Tree.Object(inputObj.name, fields))
+
+    case ListInputType(_) | OptionInputType(_) =>
       None
 
     case ListType(_) | OptionType(_) | ScalarAlias(_, _, _) | ScalarType(_, _, _, _, _, _, _, _) =>

@@ -1,0 +1,55 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  blogs(pagination: Pagination!, query: String): [Blog!]!
+}
+
+input Pagination {
+  first: Int!
+  count: Int!
+  reverse: Boolean = false
+}
+
+type Blog {
+  id: String!
+  title: String!
+  url: String! @deprecated(reason: "Use `uri` instead")
+  uri: String!
+  articles(pagination: Pagination!, statuses: [ArticleStatus!]!): [Article!]!
+}
+
+type Article {
+  id: String!
+  title: String!
+  body: String!
+  status: ArticleStatus!
+  author: Author!
+  tags: [String!]!
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
+type Author {
+  id: String!
+  name: String!
+  articles(pagination: Pagination!): [Article!]!
+}
+
+type Mutation {
+  addBlog(title: String!, uri: String!): Blog!
+  addArticle(content: ArticleContent!): Article!
+  updateArticle(id: String!, content: ArticleContent!): Article!
+  publishArticle(id: String!): Article!
+}
+
+input ArticleContent {
+  title: String!
+  body: String!
+  tags: [String!]
+}

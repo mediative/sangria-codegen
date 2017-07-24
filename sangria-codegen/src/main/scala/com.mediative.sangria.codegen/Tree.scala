@@ -31,9 +31,13 @@ object Tree {
       def typeOf(tpe: schema.Type): String = tpe match {
         case schema.OptionType(wrapped) =>
           s"Option[${typeOf(wrapped)}]"
+        case schema.OptionInputType(wrapped) =>
+          s"Option[${typeOf(wrapped)}]"
         case scalar: schema.ScalarType[_] =>
           scalar.name
         case schema.ListType(wrapped) =>
+          s"List[${typeOf(wrapped)}]"
+        case schema.ListInputType(wrapped) =>
           s"List[${typeOf(wrapped)}]"
         case tpe: schema.Type =>
           genName(tpe)
