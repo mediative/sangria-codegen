@@ -47,14 +47,19 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
     Term.Param(Vector.empty, Term.Name(paramName), Some(Type.Name(typeName)), None)
 
   def generateOperation(operation: Tree.Operation): Seq[Stat] = {
+    def fieldType(field: Tree.Field, prefix: String = ""): String =
+      field.scalaType { tpe =>
+        if (field.isObjectLike)
+          prefix + field.name.capitalize
+        else if (tpe == sangria.schema.IDType)
+          moduleName.value + ".ID"
+        else
+          tpe.namedType.name
+      }
+
     def generateSelectionParams(prefix: String)(selection: Tree.Selection): Seq[Term.Param] =
       selection.fields.map { field =>
-        val tpe = field.scalaType { tpe =>
-          if (field.isObjectLike)
-            prefix + field.name.capitalize
-          else
-            tpe.namedType.name
-        }
+        val tpe = fieldType(field, prefix)
         termParam(field.name, tpe)
       }
 
@@ -73,7 +78,7 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
           val emptySelf = Term.Param(Vector.empty, Name.Anonymous(), None, None)
           val template  = Template(Nil, ctorNames, emptySelf, None)
 
-          Vector(q"case class $tpeName(..${params}) extends $template") ++
+          Vector(q"case class $tpeName(..$params) extends $template") ++
             Option(stats)
               .filter(_.nonEmpty)
               .map { stats =>
@@ -83,7 +88,7 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
       }
 
     val variables = operation.variables.map { varDef =>
-      termParam(varDef.name, varDef.scalaType(_.namedType.name))
+      termParam(varDef.name, fieldType(varDef))
     }
 
     val name   = operation.name.getOrElse(sys.error("found unnamed operation"))
@@ -141,6 +146,11 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
           q"sealed trait $enumName",
           q"object $objectName { ..$enumValues }"
         ))
+
+    case Tree.TypeAlias(from, to) =>
+      val alias      = Type.Name(from)
+      val underlying = Type.Name(to)
+      Right(Vector(q"type $alias = $underlying": Stat))
 
     case unknown =>
       Left(Failure("Unknown output type " + unknown))

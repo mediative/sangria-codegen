@@ -5,6 +5,7 @@ schema {
 
 type Query {
   blogs(pagination: Pagination!, query: String): [Blog!]!
+  blog(id: ID!): Blog!
 }
 
 input Pagination {
@@ -14,15 +15,15 @@ input Pagination {
 }
 
 type Blog {
-  id: String!
+  id: ID!
   title: String!
   url: String! @deprecated(reason: "Use `uri` instead")
   uri: String!
-  articles(pagination: Pagination!, statuses: [ArticleStatus!]!): [Article!]!
+  articles(pagination: Pagination!, statuses: [ArticleStatus!] = [PUBLISHED]): [Article!]!
 }
 
 type Article {
-  id: String!
+  id: ID!
   title: String!
   body: String!
   status: ArticleStatus!
@@ -36,7 +37,7 @@ enum ArticleStatus {
 }
 
 type Author {
-  id: String!
+  id: ID!
   name: String!
   articles(pagination: Pagination!): [Article!]!
 }
@@ -44,8 +45,8 @@ type Author {
 type Mutation {
   addBlog(title: String!, uri: String!): Blog!
   addArticle(content: ArticleContent!): Article!
-  updateArticle(id: String!, content: ArticleContent!): Article!
-  publishArticle(id: String!): Article!
+  updateArticle(id: ID!, content: ArticleContent!): Article!
+  publishArticle(id: ID!): Article!
 }
 
 input ArticleContent {

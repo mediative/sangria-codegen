@@ -33,8 +33,6 @@ object Tree {
           s"Option[${typeOf(wrapped)}]"
         case schema.OptionInputType(wrapped) =>
           s"Option[${typeOf(wrapped)}]"
-        case scalar: schema.ScalarType[_] =>
-          scalar.name
         case schema.ListType(wrapped) =>
           s"List[${typeOf(wrapped)}]"
         case schema.ListInputType(wrapped) =>
@@ -68,6 +66,7 @@ object Tree {
   case class Object(name: String, fields: Seq[Field])    extends Type
   case class Interface(name: String, fields: Seq[Field]) extends Type
   case class Enum(name: String, vaules: Seq[String])     extends Type
+  case class TypeAlias(name: String, tpe: String)        extends Type
 
   /**
    * The API based on one or more GraphQL query documents using a given schema.

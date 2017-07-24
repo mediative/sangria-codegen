@@ -1,0 +1,14 @@
+query BlogArticles($blogId: ID!, $pagination: Pagination!) {
+  blog(id: $id) {
+    title
+    articles(pagination: $pagination) {
+      title
+      body
+      tags
+      status
+      author {
+        name
+      }
+    }
+  }
+}

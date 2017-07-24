@@ -45,8 +45,12 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       touchType(wrapped)
     case ListInputType(wrapped) =>
       touchType(wrapped)
+    case IDType =>
+      types += tpe
+      ()
     case scalar: ScalarType[_] =>
-    // Nothing
+      // Nothing
+      ()
     case underlying @ (_: OutputType[_] | _: InputObjectType[_]) =>
       types += underlying
       ()
@@ -151,6 +155,9 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
         generateField(touch = true, field.name, field.fieldType)
       }
       Some(Tree.Object(inputObj.name, fields))
+
+    case IDType =>
+      Some(Tree.TypeAlias("ID", "_root_.scala.String"))
 
     case ListInputType(_) | OptionInputType(_) =>
       None
