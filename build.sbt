@@ -82,6 +82,8 @@ val cli = project("sangria-codegen-cli")
       "io.circe"                   %% "circe-jawn"    % "0.8.0",
       "org.sangria-graphql"        %% "sangria-circe" % "1.1.0"
     ),
+    fork in run := true,
+    baseDirectory in run := (baseDirectory in ThisBuild).value,
     buildInfoKeys := Seq[BuildInfoKey](version),
     buildInfoPackage := "com.mediative.sangria.codegen.cli"
   )
