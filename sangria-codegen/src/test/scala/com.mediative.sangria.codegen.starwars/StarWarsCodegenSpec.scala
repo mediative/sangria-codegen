@@ -17,34 +17,4 @@
 package com.mediative.sangria.codegen
 package starwars
 
-import org.scalatest.WordSpec
-import java.io.File
-import scala.io.Source
-import scala.meta._
-
-class StarWarsCodegenSpec extends WordSpec {
-  import TestSchema.StarWarsSchema
-
-  val inputDir  = new File("../samples/starwars")
-  val generator = ScalametaGenerator("CodegenResult")
-
-  def contentOf(file: File) =
-    Source.fromFile(file).mkString
-
-  "SangriaCodegen" should {
-    for {
-      input <- inputDir.listFiles()
-      if input.getName.endsWith(".graphql")
-      expected = new File(inputDir, input.getName.replace(".graphql", ".scala"))
-      if expected.exists
-    } {
-      s"generate code for ${input.getName}" in {
-        val Right(out) = Builder(StarWarsSchema)
-          .withQuery(input)
-          .generate(generator)
-
-        assert(out.show[Syntax].trim == contentOf(expected).trim)
-      }
-    }
-  }
-}
+class StarWarsCodegenSpec extends CodegenBaseSpec("starwars", TestSchema.StarWarsSchema)
