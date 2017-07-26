@@ -36,15 +36,7 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
           .toVector
       ))
 
-  def touchType(tpe: Type): Unit = tpe match {
-    case OptionType(wrapped) =>
-      touchType(wrapped)
-    case OptionInputType(wrapped) =>
-      touchType(wrapped)
-    case ListType(wrapped) =>
-      touchType(wrapped)
-    case ListInputType(wrapped) =>
-      touchType(wrapped)
+  def touchType(tpe: Type): Unit = tpe.namedType match {
     case IDType =>
       types += tpe
       ()
@@ -56,11 +48,9 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       ()
   }
 
-  def isObjectLike(tpe: sangria.schema.Type): Boolean = tpe match {
-    case OptionType(wrapped)       => isObjectLike(wrapped)
-    case ListType(wrapped)         => isObjectLike(wrapped)
-    case obj: ObjectLikeType[_, _] => true
-    case _                         => false
+  def isObjectLike(tpe: Type): Boolean = tpe.namedType match {
+    case underlying @ (_: ObjectLikeType[_, _] | _: InputObjectType[_]) => true
+    case _                                                              => false
   }
 
   def generateField(
