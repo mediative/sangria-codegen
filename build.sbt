@@ -80,7 +80,8 @@ val cli = project("sangria-codegen-cli")
       "org.scalatest"              %% "scalatest"     % "3.0.3" % Test,
       "com.github.alexarchambault" %% "case-app"      % "1.2.0-M3",
       "io.circe"                   %% "circe-jawn"    % "0.8.0",
-      "org.sangria-graphql"        %% "sangria-circe" % "1.1.0"
+      "org.sangria-graphql"        %% "sangria-circe" % "1.1.0",
+      "org.scalaj"                 %% "scalaj-http"   % "2.3.0"
     ),
     fork in run := true,
     baseDirectory in run := (baseDirectory in ThisBuild).value,

@@ -19,6 +19,7 @@ package cli
 
 import java.io.{File, PrintStream}
 import io.circe.Json
+import scalaj.http.Http
 import sangria.schema._
 import sangria.marshalling.circe._
 import scala.meta.{io => _, _}
@@ -38,27 +39,58 @@ sealed trait Command {
         new PrintStream(file)
     }
 
-  def parseIntrospectionSchema(schemaFile: File): Result[Schema[_, _]] =
-    for {
-      json <- io.circe.jawn.parseFile(schemaFile).leftMap { error: io.circe.ParsingFailure =>
-        Failure(s"Failed to parse schema in $schemaFile: $error")
+  def parseIntrospectionSchemaFile(schemaFile: File): Result[Schema[_, _]] =
+    io.circe.jawn
+      .parseFile(schemaFile)
+      .flatMap(parseIntrospectionSchemaJson)
+      .leftMap { error: Throwable =>
+        Failure(s"Failed to parse schema in $schemaFile: ${error.getMessage}")
       }
 
-      schema <- Either
-        .catchNonFatal {
-          val builder = new DefaultIntrospectionSchemaBuilder[Unit]
-          Schema.buildFromIntrospection[Unit, Json](json, builder)
-        }
-        .leftMap { error: Throwable =>
-          Failure(s"Failed to parse schema in $schemaFile: ${error.getMessage}")
-        }
-    } yield schema
+  def parseIntrospectionSchemaUri(uri: String, headers: List[String]): Result[Schema[_, _]] =
+    Either
+      .catchNonFatal {
+        val allHeaders = parseHeaders(headers) ++ List(
+          "content-type" -> "application/json",
+          "accept"       -> "application/json"
+        )
+        val query = sangria.introspection.introspectionQuery.renderCompact
+        val data = Json.obj(
+          "operationName" -> Json.fromString("IntrospectionQuery"),
+          "query"         -> Json.fromString(query),
+          "variables"     -> Json.obj()
+        )
+        val request = Http(uri).headers(allHeaders).postData(data.noSpaces)
+        request.asString.throwError.body
+      }
+      .flatMap(io.circe.jawn.parse(_))
+      .flatMap(parseIntrospectionSchemaJson)
+      .leftMap { error: Throwable =>
+        Failure(s"Failed to read schema from $uri: ${error.getMessage}")
+      }
+
+  def parseIntrospectionSchemaJson(json: Json): Either[Throwable, Schema[_, _]] =
+    Either.catchNonFatal {
+      val builder = new DefaultIntrospectionSchemaBuilder[Unit]
+      Schema.buildFromIntrospection[Unit, Json](json, builder)
+    }
+
+  def parseHeaders(headers: List[String]): List[(String, String)] =
+    headers.filter(_.nonEmpty).map { header =>
+      header.split("=", 2) match {
+        case Array(name, value) => name -> value
+        case Array(name)        => name -> ""
+      }
+    }
 }
 
 case class Generate(
-    @HelpMessage("Path to GraphQL schema file")
-    @ValueDescription("file")
-    schema: String = "schema.graphql",
+    @HelpMessage("HTTP URI or path to GraphQL introspection query result")
+    @ValueDescription("URI|file")
+    schema: String = "schema.json",
+    @HelpMessage("HTTP header if schema is an HTTP endpoint")
+    @ValueDescription("name=value")
+    header: List[String] = Nil,
     @HelpMessage("Name of the enclosing object")
     @ValueDescription("name")
     `object`: String = "SangriaCodegen",
@@ -72,12 +104,13 @@ case class Generate(
   def run(args: Seq[String]): Result[Unit] = {
     val generator  = ScalametaGenerator(`object`)
     val files      = args.map(path => new File(path))
-    val schemaFile = new File(schema)
     val builder =
-      if (schema.endsWith(".json"))
-        Builder(parseIntrospectionSchema(schemaFile))
+      if (schema.startsWith("http://") || schema.startsWith("https://"))
+        Builder(parseIntrospectionSchemaUri(schema, header))
+      else if (schema.endsWith(".json"))
+        Builder(parseIntrospectionSchemaFile(new File(schema)))
       else
-        Builder(schemaFile)
+        Builder(new File(schema))
 
     builder
       .withQuery(files: _*)
@@ -95,20 +128,29 @@ case class Generate(
 }
 
 case class PrintSchema(
-    @HelpMessage("Path to GraphQL introspection query result")
-    @ValueDescription("file")
+    @HelpMessage("HTTP URI or path to GraphQL introspection query result")
+    @ValueDescription("URI|file")
     schema: String = "schema.json",
+    @HelpMessage("HTTP header if schema is an HTTP endpoint")
+    @ValueDescription("name=value")
+    header: List[String] = Nil,
     @HelpMessage("Output path for GraphQL schema language file")
     @ValueDescription("path")
     output: Option[String] = None
 ) extends Command {
-  def run(args: Seq[String]): Result[Unit] =
-    parseIntrospectionSchema(new File(schema))
-      .map { schema =>
-        val stdout = outputStream(output)
-        stdout.println(schema.renderPretty)
-        stdout.close()
-      }
+  def run(args: Seq[String]): Result[Unit] = {
+    val introspectionSchema: Result[Schema[_, _]] =
+      if (schema.startsWith("http://") || schema.startsWith("https://"))
+        parseIntrospectionSchemaUri(schema, header)
+      else
+        parseIntrospectionSchemaFile(new File(schema))
+
+    introspectionSchema.map { schema =>
+      val stdout = outputStream(output)
+      stdout.println(schema.renderPretty)
+      stdout.close()
+    }
+  }
 }
 
 object Main extends CommandApp[Command] {
