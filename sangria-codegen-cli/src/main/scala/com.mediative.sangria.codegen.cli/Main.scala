@@ -102,8 +102,8 @@ case class Generate(
     output: Option[String] = None
 ) extends Command {
   def run(args: Seq[String]): Result[Unit] = {
-    val generator  = ScalametaGenerator(`object`)
-    val files      = args.map(path => new File(path))
+    val generator = ScalametaGenerator(`object`)
+    val files     = args.map(path => new File(path))
     val builder =
       if (schema.startsWith("http://") || schema.startsWith("https://"))
         Builder(parseIntrospectionSchemaUri(schema, header))
