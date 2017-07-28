@@ -3,7 +3,7 @@ enablePlugins(SangriaCodegenPlugin)
 scalaVersion := sys.props("scala.version")
 
 TaskKey[Unit]("check") := {
-  val file = sangriaCodegen.value
+  val file = (sangriaCodegen in Compile).value
   val expected =
     """
       |object SangriaCodegen {

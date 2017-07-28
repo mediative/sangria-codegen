@@ -82,7 +82,10 @@ object SangriaCodegenPlugin extends AutoPlugin {
 
   override def requires = plugins.JvmPlugin
 
-  override def projectSettings: Seq[Setting[_]] = Seq(
+  override def projectSettings: Seq[Setting[_]] =
+    sangriaCodegenScopedSettings(Compile) ++ sangriaCodegenDefaultSettings
+
+  def sangriaCodegenDefaultSettings: Seq[Setting[_]] = Seq(
     ivyConfigurations += SangriaCodegen,
     libraryDependencies += sangriaCodegenCliDependency(scalaBinaryVersion.value),
     mainClass in SangriaCodegen := Some("com.mediative.sangria.codegen.cli.Main"),
@@ -99,32 +102,37 @@ object SangriaCodegenPlugin extends AutoPlugin {
         envVars = envVars.value
       )
       new ForkRun(forkOptions)
-    },
-    sangriaCodegenSchema := (resourceDirectory in Compile).value / "schema.graphql",
-    resourceDirectories in sangriaCodegen := (resourceDirectories in Compile).value,
-    includeFilter in sangriaCodegen := "*.graphql",
-    excludeFilter in sangriaCodegen := HiddenFileFilter,
-    sangriaCodegenQueries := Defaults
-      .collectFiles(
-        resourceDirectories in sangriaCodegen,
-        includeFilter in sangriaCodegen,
-        excludeFilter in sangriaCodegen)
-      .value,
-    sourceGenerators in Compile += Def.task { Seq(sangriaCodegen.value) },
-    sangriaCodegen := {
-      val schema  = sangriaCodegenSchema.value.getAbsolutePath
-      val output  = sourceManaged.value / "SangriaCodegen.scala"
-      val queries = sangriaCodegenQueries.value.map(_.getAbsolutePath)
-      val options = Seq("generate", "--schema", schema, "--output", output.getAbsolutePath) ++ queries
-
-      (runner in (SangriaCodegen, run)).value.run(
-        "com.mediative.sangria.codegen.cli.Main",
-        Attributed.data((fullClasspath in SangriaCodegen).value),
-        options,
-        streams.value.log
-      )
-
-      output
     }
   )
+
+  def sangriaCodegenScopedSettings(conf: Configuration): Seq[Setting[_]] =
+    inConfig(conf)(
+      Seq(
+        sangriaCodegenSchema := resourceDirectory.value / "schema.graphql",
+        resourceDirectories in sangriaCodegen := resourceDirectories.value,
+        includeFilter in sangriaCodegen := "*.graphql",
+        excludeFilter in sangriaCodegen := HiddenFileFilter,
+        sangriaCodegenQueries := Defaults
+          .collectFiles(
+            resourceDirectories in sangriaCodegen,
+            includeFilter in sangriaCodegen,
+            excludeFilter in sangriaCodegen)
+          .value,
+        sourceGenerators += Def.task { Seq(sangriaCodegen.value) },
+        sangriaCodegen := {
+          val schema  = sangriaCodegenSchema.value.getAbsolutePath
+          val output  = sourceManaged.value / "sbt-sangria-codegen" / "SangriaCodegen.scala"
+          val queries = sangriaCodegenQueries.value.map(_.getAbsolutePath)
+          val options = Seq("generate", "--schema", schema, "--output", output.getAbsolutePath) ++ queries
+
+          (runner in (SangriaCodegen, run)).value.run(
+            "com.mediative.sangria.codegen.cli.Main",
+            Attributed.data((fullClasspath in SangriaCodegen).value),
+            options,
+            streams.value.log
+          )
+
+          output
+        }
+      ))
 }
