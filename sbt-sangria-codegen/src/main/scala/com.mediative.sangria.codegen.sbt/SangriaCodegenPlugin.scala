@@ -35,6 +35,8 @@ import sbt.Keys._
  *
  * See the [[https://github.com/mediative/sangria-codegen/tree/master/sbt-sangria-codegen/src/sbt-test/sangria-codegen/generate example project]].
  *
+ * Note, the plugin only works for project using Scala version 2.11.x or 2.12.x.
+ *
  * == Configuration ==
  *
  * Keys are defined in [[SangriaCodegenPlugin.autoImport]].
@@ -57,7 +59,6 @@ import sbt.Keys._
  * sangriaCodegenSchema := sourceDirectory.value / "graphql" / "schema.graphql"
  * sangriaCodegenQueries += sourceDirectory.value / "graphql" / "api.graphql"
  * }}}
- *
  */
 object SangriaCodegenPlugin extends AutoPlugin {
 
@@ -69,11 +70,21 @@ object SangriaCodegenPlugin extends AutoPlugin {
   }
   import autoImport._
 
+  val SupportedScalaVersions = List("2.11", "2.12")
+
+  def sangriaCodegenCliDependency(scalaBinaryVersion: String) =
+    if (SupportedScalaVersions.contains(scalaBinaryVersion))
+      "com.mediative" % s"sangria-codegen-cli_$scalaBinaryVersion" % BuildInfo.version % SangriaCodegen
+    else
+      sys.error(
+        s"Scala $scalaBinaryVersion.x is not supported by sangria-codegen. " +
+          s"Supported versions are ${SupportedScalaVersions.mkString(", ")}.")
+
   override def requires = plugins.JvmPlugin
 
   override def projectSettings: Seq[Setting[_]] = Seq(
     ivyConfigurations += SangriaCodegen,
-    libraryDependencies += "com.mediative" % "sangria-codegen-cli_2.11" % BuildInfo.version % SangriaCodegen,
+    libraryDependencies += sangriaCodegenCliDependency(scalaBinaryVersion.value),
     mainClass in SangriaCodegen := Some("com.mediative.sangria.codegen.cli.Main"),
     fullClasspath in SangriaCodegen := Classpaths
       .managedJars(SangriaCodegen, classpathTypes.value, update.value),

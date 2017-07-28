@@ -37,6 +37,8 @@ class StarWarsAnnotationSpec extends WordSpec with Matchers {
           friends = Some(List(Some(HeroAndFriends.Hero.Friends(Some("R2D2")))))
         )
       )
+
+      assert(heroAndFriends.hero.friends.get.head.get.name.get == "R2D2")
     }
   }
 }
