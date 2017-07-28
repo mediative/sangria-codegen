@@ -6,8 +6,8 @@ Jvm.`1.8`.required
 inThisBuild(
   Def.settings(
     organization := "com.mediative",
-    scalaVersion := "2.11.11",
-    crossScalaVersions := Seq(scalaVersion.value, "2.12.2"),
+    scalaVersion := "2.12.2",
+    crossScalaVersions := Seq("2.11.11", "2.12.2"),
     scalacOptions += "-Ywarn-unused-import",
     publishArtifact in (Compile, packageDoc) := false,
     publishArtifact in (Compile, packageSrc) := false,
@@ -78,7 +78,7 @@ val cli = project("sangria-codegen-cli")
   .settings(
     libraryDependencies ++= Seq(
       "org.scalatest"              %% "scalatest"     % "3.0.3" % Test,
-      "com.github.alexarchambault" %% "case-app"      % "1.2.0-M3",
+      "com.github.alexarchambault" %% "case-app"      % "1.2.0-M4",
       "io.circe"                   %% "circe-jawn"    % "0.8.0",
       "org.sangria-graphql"        %% "sangria-circe" % "1.1.0",
       "org.scalaj"                 %% "scalaj-http"   % "2.3.0"
@@ -93,7 +93,7 @@ val sbtPlugin = project("sbt-sangria-codegen")
   .enablePlugins(MediativeBintrayPlugin, BuildInfoPlugin)
   .settings(
     scalaVersion := "2.10.6",
-    crossScalaVersions := Seq(scalaVersion.value),
+    crossScalaVersions := Seq("2.10.6"),
     scalacOptions ~= { _.filterNot(Set("-Ywarn-unused-import")) },
     publishLocal := publishLocal
       .dependsOn(publishLocal in codegen)
@@ -104,6 +104,8 @@ val sbtPlugin = project("sbt-sangria-codegen")
     scriptedSettings,
     // scriptedBufferLog := false,
     scriptedLaunchOpts += "-Dproject.version=" + version.value,
+    // Dynamically set the Scala version to match what publishLocal provides.
+    scriptedLaunchOpts += "-Dscala.version=" + (scalaVersion in ThisBuild).value,
     buildInfoKeys := Seq[BuildInfoKey](version),
     buildInfoPackage := "com.mediative.sangria.codegen.sbt"
   )

@@ -1,6 +1,6 @@
 name := "test"
 enablePlugins(SangriaCodegenPlugin)
-scalaVersion := "2.11.11"
+scalaVersion := sys.props("scala.version")
 
 TaskKey[Unit]("check") := {
   val file = sangriaCodegen.value
