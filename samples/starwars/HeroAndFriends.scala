@@ -1,4 +1,4 @@
-object CodegenResult {
+object HeroAndFriendsApi {
   case class HeroAndFriends(hero: HeroAndFriends.Hero)
   object HeroAndFriends {
     case class HeroAndFriendsVariables()

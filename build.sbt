@@ -64,6 +64,7 @@ val codegen = project("sangria-codegen")
   .enablePlugins(MediativeBintrayPlugin)
   .settings(
     macroAnnotationSettings,
+    unmanagedSourceDirectories in Test += (baseDirectory in ThisBuild).value / "samples",
     libraryDependencies ++= Seq(
       "org.scalatest"       %% "scalatest" % "3.0.3" % Test,
       "org.scalameta"       %% "scalameta" % "1.8.0",

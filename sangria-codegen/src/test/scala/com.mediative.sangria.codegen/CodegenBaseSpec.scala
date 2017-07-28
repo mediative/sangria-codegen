@@ -26,7 +26,6 @@ abstract class CodegenBaseSpec(name: String, schema: Option[Schema[_, _]] = None
   def this(name: String, schema: Schema[_, _]) = this(name, Some(schema))
 
   val inputDir  = new File("../samples", name)
-  val generator = ScalametaGenerator("CodegenResult")
 
   def contentOf(file: File) =
     Source.fromFile(file).mkString
@@ -35,10 +34,12 @@ abstract class CodegenBaseSpec(name: String, schema: Option[Schema[_, _]] = None
     for {
       input <- inputDir.listFiles()
       if input.getName.endsWith(".graphql")
-      expected = new File(inputDir, input.getName.replace(".graphql", ".scala"))
+      name = input.getName.replace(".graphql", "")
+      expected = new File(inputDir, s"$name.scala")
       if expected.exists
     } {
       s"generate code for ${input.getName}" in {
+        val generator = ScalametaGenerator(s"${name}Api")
         val builder = schema match {
           case Some(schema) => Builder(schema)
           case None         => Builder(new File(inputDir, "schema.graphql"))

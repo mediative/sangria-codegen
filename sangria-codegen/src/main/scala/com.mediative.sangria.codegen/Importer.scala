@@ -147,7 +147,7 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       Some(Tree.Object(inputObj.name, fields))
 
     case IDType =>
-      Some(Tree.TypeAlias("ID", "_root_.scala.String"))
+      Some(Tree.TypeAlias("ID", "String"))
 
     case ListInputType(_) | OptionInputType(_) =>
       None

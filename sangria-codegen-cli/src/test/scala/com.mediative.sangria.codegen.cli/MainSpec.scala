@@ -40,7 +40,7 @@ class MainSpec extends WordSpec with BeforeAndAfter {
       val output     = new File(outputDir, "subdir/HeroNameQuery.scala")
       val command = Generate(
         schema = schemaPath,
-        `object` = "CodegenResult",
+        `object` = "HeroNameQueryApi",
         output = Some(output.getAbsolutePath)
       )
       val Right(_) = command.run(Seq(query.getAbsolutePath))
@@ -55,7 +55,7 @@ class MainSpec extends WordSpec with BeforeAndAfter {
       val output     = new File(outputDir, "from/json/HeroNameQuery.scala")
       val command = Generate(
         schema = schemaPath,
-        `object` = "CodegenResult",
+        `object` = "HeroNameQueryApi",
         output = Some(output.getAbsolutePath)
       )
       val Right(_) = command.run(Seq(query.getAbsolutePath))

@@ -1,4 +1,4 @@
-object CodegenResult {
+object HeroFragmentsApi {
   case class HeroAppearancesAndInline(hero: HeroAppearancesAndInline.Hero)
   object HeroAppearancesAndInline {
     case class HeroAppearancesAndInlineVariables()
