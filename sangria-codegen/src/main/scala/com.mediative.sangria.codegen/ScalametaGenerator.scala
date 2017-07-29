@@ -46,6 +46,12 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
   def termParam(paramName: String, typeName: String) =
     Term.Param(Vector.empty, Term.Name(paramName), Some(Type.Name(typeName)), None)
 
+  def generateTemplate(traits: Seq[String]): Template = {
+    val ctorNames = traits.map(Ctor.Name.apply)
+    val emptySelf = Term.Param(Vector.empty, Name.Anonymous(), None, None)
+    Template(Nil, ctorNames, emptySelf, None)
+  }
+
   def generateOperation(operation: Tree.Operation): Seq[Stat] = {
     def fieldType(field: Tree.Field, prefix: String = ""): String =
       field.scalaType { tpe =>
@@ -72,11 +78,9 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
           val stats  = generateSelectionStats(prefix + name.capitalize + ".")(selection)
           val params = generateSelectionParams(prefix + name.capitalize + ".")(selection)
 
-          val tpeName   = Type.Name(name.capitalize)
-          val termName  = Term.Name(name.capitalize)
-          val ctorNames = selection.interfaces.map(Ctor.Name.apply)
-          val emptySelf = Term.Param(Vector.empty, Name.Anonymous(), None, None)
-          val template  = Template(Nil, ctorNames, emptySelf, None)
+          val tpeName  = Type.Name(name.capitalize)
+          val termName = Term.Name(name.capitalize)
+          val template = generateTemplate(selection.interfaces)
 
           Vector(q"case class $tpeName(..$params) extends $template") ++
             Option(stats)
@@ -132,9 +136,7 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
 
     case Tree.Enum(name, values) =>
       val enumValues = values.map { value =>
-        val ctorName  = Ctor.Ref.Name(name)
-        val parent    = ctor"$ctorName"
-        val template  = template"$parent"
+        val template  = generateTemplate(Seq(name))
         val valueName = Term.Name(value)
         q"case object $valueName extends $template"
       }
