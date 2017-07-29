@@ -18,6 +18,7 @@ package com.mediative.sangria.codegen
 
 import scala.collection.immutable.Seq
 import scala.meta._
+import sangria.schema
 import cats.implicits._
 
 /**
@@ -43,8 +44,8 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
     }
   }
 
-  def termParam(paramName: String, typeName: String) =
-    Term.Param(Vector.empty, Term.Name(paramName), Some(Type.Name(typeName)), None)
+  def termParam(paramName: String, tpe: Type) =
+    Term.Param(Vector.empty, Term.Name(paramName), Some(tpe), None)
 
   def generateTemplate(traits: Seq[String]): Template = {
     val ctorNames = traits.map(Ctor.Name.apply)
@@ -52,15 +53,31 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
     Template(Nil, ctorNames, emptySelf, None)
   }
 
+  def generateFieldType(field: Tree.Field)(genType: schema.Type => Type): Type = {
+    def typeOf(tpe: schema.Type): Type = tpe match {
+      case schema.OptionType(wrapped) =>
+        t"Option[${typeOf(wrapped)}]"
+      case schema.OptionInputType(wrapped) =>
+        t"Option[${typeOf(wrapped)}]"
+      case schema.ListType(wrapped) =>
+        t"List[${typeOf(wrapped)}]"
+      case schema.ListInputType(wrapped) =>
+        t"List[${typeOf(wrapped)}]"
+      case tpe: schema.Type =>
+        genType(tpe)
+    }
+    typeOf(field.tpe)
+  }
+
   def generateOperation(operation: Tree.Operation): Seq[Stat] = {
-    def fieldType(field: Tree.Field, prefix: String = ""): String =
-      field.scalaType { tpe =>
+    def fieldType(field: Tree.Field, prefix: String = ""): Type =
+      generateFieldType(field) { tpe =>
         if (field.isObjectLike)
-          prefix + field.name.capitalize
+          Type.Name(prefix + field.name.capitalize)
         else if (tpe == sangria.schema.IDType)
-          moduleName.value + ".ID"
+          Type.Name(moduleName.value + ".ID")
         else
-          tpe.namedType.name
+          Type.Name(tpe.namedType.name)
       }
 
     def generateSelectionParams(prefix: String)(selection: Tree.Selection): Seq[Term.Param] =
@@ -117,8 +134,15 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
   def generateInterface(interface: Tree.Interface): Stat = {
     val defs = interface.fields.map { field =>
       val fieldName = Term.Name(field.name)
-      val tpeName   = Type.Name(field.scalaType(_.namedType.name))
-      q"def $fieldName: $tpeName"
+      val tpe = generateFieldType(field) { tpe =>
+        field.selection.map(_.interfaces).filter(_.nonEmpty) match {
+          case Some(interfaces) =>
+            interfaces.map(x => Type.Name(x): Type).reduce(Type.With(_, _))
+          case None =>
+            Type.Name(tpe.namedType.name)
+        }
+      }
+      q"def $fieldName: $tpe"
     }
     val traitName = Type.Name(interface.name)
     q"trait $traitName { ..$defs }"
@@ -129,7 +153,10 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
       Right(Vector(generateInterface(interface)))
 
     case Tree.Object(name, fields) =>
-      val params    = fields.map(field => termParam(field.name, field.scalaType(_.namedType.name)))
+      val params = fields.map { field =>
+        val tpe = generateFieldType(field)(t => Type.Name(t.namedType.name))
+        termParam(field.name, tpe)
+      }
       val className = Type.Name(name)
       // FIXME: val interfaces = obj.interfaces.
       Right(Vector(q"case class $className(..$params)": Stat))
