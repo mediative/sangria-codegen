@@ -25,7 +25,7 @@ import sangria.schema.Schema
 abstract class CodegenBaseSpec(name: String, schema: Option[Schema[_, _]] = None) extends WordSpec {
   def this(name: String, schema: Schema[_, _]) = this(name, Some(schema))
 
-  val inputDir  = new File("../samples", name)
+  val inputDir = new File("../samples", name)
 
   def contentOf(file: File) =
     Source.fromFile(file).mkString
@@ -34,7 +34,7 @@ abstract class CodegenBaseSpec(name: String, schema: Option[Schema[_, _]] = None
     for {
       input <- inputDir.listFiles()
       if input.getName.endsWith(".graphql")
-      name = input.getName.replace(".graphql", "")
+      name     = input.getName.replace(".graphql", "")
       expected = new File(inputDir, s"$name.scala")
       if expected.exists
     } {
