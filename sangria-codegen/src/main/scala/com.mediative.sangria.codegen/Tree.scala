@@ -27,21 +27,6 @@ object Tree {
   case class Field(name: String, tpe: schema.Type, selection: Option[Selection] = None)
       extends Tree {
     def isObjectLike = selection.nonEmpty
-    def scalaType(genName: schema.Type => String): String = {
-      def typeOf(tpe: schema.Type): String = tpe match {
-        case schema.OptionType(wrapped) =>
-          s"Option[${typeOf(wrapped)}]"
-        case schema.OptionInputType(wrapped) =>
-          s"Option[${typeOf(wrapped)}]"
-        case schema.ListType(wrapped) =>
-          s"List[${typeOf(wrapped)}]"
-        case schema.ListInputType(wrapped) =>
-          s"List[${typeOf(wrapped)}]"
-        case tpe: schema.Type =>
-          genName(tpe)
-      }
-      typeOf(tpe)
-    }
   }
   case class Selection(fields: Seq[Field], interfaces: Seq[String] = Vector.empty) extends Tree {
     def +(that: Selection) =

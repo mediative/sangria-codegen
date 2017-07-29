@@ -14,7 +14,11 @@ input Pagination {
   reverse: Boolean = false
 }
 
-type Blog {
+interface Identifiable {
+  id: ID!
+}
+
+type Blog implements Identifiable {
   id: ID!
   title: String!
   url: String! @deprecated(reason: "Use `uri` instead")
@@ -22,7 +26,7 @@ type Blog {
   articles(pagination: Pagination!, statuses: [ArticleStatus!] = [PUBLISHED]): [Article!]!
 }
 
-type Article {
+type Article implements Identifiable {
   id: ID!
   title: String!
   body: String!
@@ -36,7 +40,7 @@ enum ArticleStatus {
   PUBLISHED
 }
 
-type Author {
+type Author implements Identifiable {
   id: ID!
   name: String!
   articles(pagination: Pagination!): [Article!]!
