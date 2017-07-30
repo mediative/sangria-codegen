@@ -15,10 +15,10 @@ object BlogFragmentsApi {
     def author: AuthorFragment
   }
   trait AuthorFragment {
-    def id: ID
+    def id: BlogFragmentsApi.ID
     def name: String
   }
-  trait IdFragment { def id: ID }
+  trait IdFragment { def id: BlogFragmentsApi.ID }
   trait ArticleWithAuthorIdFragment {
     def title: String
     def author: IdFragment with AuthorFragment

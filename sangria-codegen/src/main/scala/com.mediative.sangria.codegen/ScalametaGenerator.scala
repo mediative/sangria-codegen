@@ -63,6 +63,8 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
         t"List[${typeOf(wrapped)}]"
       case schema.ListInputType(wrapped) =>
         t"List[${typeOf(wrapped)}]"
+      case tpe: schema.ScalarType[_] if tpe == schema.IDType =>
+        Type.Name(moduleName.value + ".ID")
       case tpe: schema.Type =>
         genType(tpe)
     }
@@ -74,8 +76,6 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
       generateFieldType(field) { tpe =>
         if (field.isObjectLike)
           Type.Name(prefix + field.name.capitalize)
-        else if (tpe == sangria.schema.IDType)
-          Type.Name(moduleName.value + ".ID")
         else
           Type.Name(tpe.namedType.name)
       }
