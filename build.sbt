@@ -105,9 +105,10 @@ val sbtPlugin = project("sbt-sangria-codegen")
     scriptedSettings,
     // scriptedBufferLog := false,
     scriptedLaunchOpts += "-Dproject.version=" + version.value,
-    // Dynamically set the Scala version to match what publishLocal provides.
-    scriptedLaunchOpts += "-Dscala.version=" + (scalaVersion in ThisBuild).value,
-    buildInfoKeys := Seq[BuildInfoKey](version),
+    buildInfoKeys := Seq[BuildInfoKey](
+      version,
+      scalaVersion in ThisBuild,
+      scalaBinaryVersion in ThisBuild),
     buildInfoPackage := "com.mediative.sangria.codegen.sbt"
   )
 
