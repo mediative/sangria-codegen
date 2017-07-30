@@ -35,8 +35,6 @@ import sbt.Keys._
  *
  * See the [[https://github.com/mediative/sangria-codegen/tree/master/sbt-sangria-codegen/src/sbt-test/sangria-codegen/generate example project]].
  *
- * Note, the plugin only works for project using Scala version 2.11.x or 2.12.x.
- *
  * == Configuration ==
  *
  * Keys are defined in [[SangriaCodegenPlugin.autoImport]].
@@ -70,16 +68,6 @@ object SangriaCodegenPlugin extends AutoPlugin {
   }
   import autoImport._
 
-  val SupportedScalaVersions = List("2.11", "2.12")
-
-  def sangriaCodegenCliDependency(scalaBinaryVersion: String) =
-    if (SupportedScalaVersions.contains(scalaBinaryVersion))
-      "com.mediative" % s"sangria-codegen-cli_$scalaBinaryVersion" % BuildInfo.version % SangriaCodegen
-    else
-      sys.error(
-        s"Scala $scalaBinaryVersion.x is not supported by sangria-codegen. " +
-          s"Supported versions are ${SupportedScalaVersions.mkString(", ")}.")
-
   override def requires = plugins.JvmPlugin
 
   override def projectSettings: Seq[Setting[_]] =
@@ -87,7 +75,12 @@ object SangriaCodegenPlugin extends AutoPlugin {
 
   def sangriaCodegenDefaultSettings: Seq[Setting[_]] = Seq(
     ivyConfigurations += SangriaCodegen,
-    libraryDependencies += sangriaCodegenCliDependency(scalaBinaryVersion.value),
+    libraryDependencies ++= List(
+      // Explicitly set the Scala version dependency so the resolution doesn't pick
+      // up the Scala version of the project the plugin is enabled in.
+      "org.scala-lang" % "scala-reflect"                                        % BuildInfo.scalaVersion % SangriaCodegen,
+      "com.mediative"  % s"sangria-codegen-cli_${BuildInfo.scalaBinaryVersion}" % BuildInfo.version      % SangriaCodegen
+    ),
     mainClass in SangriaCodegen := Some("com.mediative.sangria.codegen.cli.Main"),
     fullClasspath in SangriaCodegen := Classpaths
       .managedJars(SangriaCodegen, classpathTypes.value, update.value),
@@ -126,7 +119,7 @@ object SangriaCodegenPlugin extends AutoPlugin {
           val options = Seq("generate", "--schema", schema, "--output", output.getAbsolutePath) ++ queries
 
           (runner in (SangriaCodegen, run)).value.run(
-            "com.mediative.sangria.codegen.cli.Main",
+            (mainClass in SangriaCodegen).value.get,
             Attributed.data((fullClasspath in SangriaCodegen).value),
             options,
             streams.value.log
