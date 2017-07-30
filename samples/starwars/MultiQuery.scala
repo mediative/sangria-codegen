@@ -1,35 +1,35 @@
 object MultiQueryApi {
-  case class HeroAndFriends(hero: HeroAndFriends.Hero)
+  case class HeroAndFriends(hero: MultiQueryApi.HeroAndFriends.Hero)
   object HeroAndFriends {
     case class HeroAndFriendsVariables()
-    case class Hero(name: Option[String], friends: Option[List[Option[HeroAndFriends.Hero.Friends]]])
+    case class Hero(name: Option[String], friends: Option[List[Option[MultiQueryApi.HeroAndFriends.Hero.Friends]]])
     object Hero { case class Friends(name: Option[String]) }
   }
-  case class HeroAndNestedFriends(hero: HeroAndNestedFriends.Hero)
+  case class HeroAndNestedFriends(hero: MultiQueryApi.HeroAndNestedFriends.Hero)
   object HeroAndNestedFriends {
     case class HeroAndNestedFriendsVariables()
-    case class Hero(name: Option[String], friends: Option[List[Option[HeroAndNestedFriends.Hero.Friends]]])
+    case class Hero(name: Option[String], friends: Option[List[Option[MultiQueryApi.HeroAndNestedFriends.Hero.Friends]]])
     object Hero {
-      case class Friends(name: Option[String], friends: Option[List[Option[HeroAndNestedFriends.Hero.Friends.Friends]]])
+      case class Friends(name: Option[String], friends: Option[List[Option[MultiQueryApi.HeroAndNestedFriends.Hero.Friends.Friends]]])
       object Friends {
-        case class Friends(name: Option[String], friends: Option[List[Option[HeroAndNestedFriends.Hero.Friends.Friends.Friends]]])
+        case class Friends(name: Option[String], friends: Option[List[Option[MultiQueryApi.HeroAndNestedFriends.Hero.Friends.Friends.Friends]]])
         object Friends {
-          case class Friends(name: Option[String], friends: Option[List[Option[HeroAndNestedFriends.Hero.Friends.Friends.Friends.Friends]]])
+          case class Friends(name: Option[String], friends: Option[List[Option[MultiQueryApi.HeroAndNestedFriends.Hero.Friends.Friends.Friends.Friends]]])
           object Friends { case class Friends(name: Option[String]) }
         }
       }
     }
   }
-  case class FragmentExample(human: Option[FragmentExample.Human], droid: FragmentExample.Droid)
+  case class FragmentExample(human: Option[MultiQueryApi.FragmentExample.Human], droid: MultiQueryApi.FragmentExample.Droid)
   object FragmentExample {
     case class FragmentExampleVariables()
     case class Human(name: Option[String], appearsIn: Option[List[Option[Episode]]], homePlanet: Option[String]) extends Common
     case class Droid(name: Option[String], appearsIn: Option[List[Option[Episode]]], primaryFunction: Option[String]) extends Common
   }
-  case class VariableExample(human: Option[VariableExample.Human])
+  case class VariableExample(human: Option[MultiQueryApi.VariableExample.Human])
   object VariableExample {
     case class VariableExampleVariables(humanId: String)
-    case class Human(name: Option[String], homePlanet: Option[String], friends: Option[List[Option[VariableExample.Human.Friends]]])
+    case class Human(name: Option[String], homePlanet: Option[String], friends: Option[List[Option[MultiQueryApi.VariableExample.Human.Friends]]])
     object Human { case class Friends(name: Option[String]) }
   }
   trait Common {
