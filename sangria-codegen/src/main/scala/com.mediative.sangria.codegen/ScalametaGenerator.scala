@@ -113,8 +113,9 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
     }
 
     val name   = operation.name.getOrElse(sys.error("found unnamed operation"))
-    val stats  = generateSelectionStats(name + ".")(operation.selection)
-    val params = generateSelectionParams(name + ".")(operation.selection)
+    val prefix = moduleName.value + "." + name + "."
+    val stats  = generateSelectionStats(prefix)(operation.selection)
+    val params = generateSelectionParams(prefix)(operation.selection)
 
     val tpeName          = Type.Name(name)
     val termName         = Term.Name(name)

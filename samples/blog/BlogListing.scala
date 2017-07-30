@@ -1,5 +1,5 @@
 object BlogListingApi {
-  case class BlogListing(blogs: List[BlogListing.Blogs])
+  case class BlogListing(blogs: List[BlogListingApi.BlogListing.Blogs])
   object BlogListing {
     case class BlogListingVariables(pagination: Pagination)
     case class Blogs(id: BlogListingApi.ID, title: String, uri: String)

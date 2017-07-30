@@ -1,25 +1,25 @@
 object HeroFragmentsApi {
-  case class HeroAppearancesAndInline(hero: HeroAppearancesAndInline.Hero)
+  case class HeroAppearancesAndInline(hero: HeroFragmentsApi.HeroAppearancesAndInline.Hero)
   object HeroAppearancesAndInline {
     case class HeroAppearancesAndInlineVariables()
     case class Hero(name: Option[String], appearsIn: Option[List[Option[Episode]]], id: String) extends Appearances
   }
-  case class HeroAppearances(hero: HeroAppearances.Hero)
+  case class HeroAppearances(hero: HeroFragmentsApi.HeroAppearances.Hero)
   object HeroAppearances {
     case class HeroAppearancesVariables()
     case class Hero(name: Option[String], appearsIn: Option[List[Option[Episode]]]) extends Appearances
   }
-  case class HeroAppearancesAndInlineAlias(hero: HeroAppearancesAndInlineAlias.Hero)
+  case class HeroAppearancesAndInlineAlias(hero: HeroFragmentsApi.HeroAppearancesAndInlineAlias.Hero)
   object HeroAppearancesAndInlineAlias {
     case class HeroAppearancesAndInlineAliasVariables()
     case class Hero(name: Option[String], appearsIn: Option[List[Option[Episode]]], heroId: String) extends Appearances
   }
-  case class HeroFragmentOverlap(hero: HeroFragmentOverlap.Hero)
+  case class HeroFragmentOverlap(hero: HeroFragmentsApi.HeroFragmentOverlap.Hero)
   object HeroFragmentOverlap {
     case class HeroFragmentOverlapVariables()
     case class Hero(id: String, name: Option[String], appearsIn: Option[List[Option[Episode]]]) extends Identifiable with Appearances
   }
-  case class HeroNameAliasAndAppearances(hero: HeroNameAliasAndAppearances.Hero)
+  case class HeroNameAliasAndAppearances(hero: HeroFragmentsApi.HeroNameAliasAndAppearances.Hero)
   object HeroNameAliasAndAppearances {
     case class HeroNameAliasAndAppearancesVariables()
     case class Hero(alias: Option[String], name: Option[String], appearsIn: Option[List[Option[Episode]]]) extends NameAlias with Appearances
