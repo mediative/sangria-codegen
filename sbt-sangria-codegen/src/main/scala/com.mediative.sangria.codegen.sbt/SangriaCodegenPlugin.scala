@@ -52,6 +52,8 @@ import sbt.Keys._
  *  - `excludeFilter in sangriaCodegen`: Filter out query documents.
  *    Defaults to `HiddenFileFilter`.
  *
+ *  - `name in sangriaCodegen`: Name of the enclosing object.
+ *
  * @example
  * {{{
  * sangriaCodegenSchema := sourceDirectory.value / "graphql" / "schema.graphql"
@@ -112,11 +114,19 @@ object SangriaCodegenPlugin extends AutoPlugin {
             excludeFilter in sangriaCodegen)
           .value,
         sourceGenerators += Def.task { Seq(sangriaCodegen.value) },
+        name in sangriaCodegen := "SangriaCodegen",
         sangriaCodegen := {
-          val schema  = sangriaCodegenSchema.value.getAbsolutePath
           val output  = sourceManaged.value / "sbt-sangria-codegen" / "SangriaCodegen.scala"
           val queries = sangriaCodegenQueries.value.map(_.getAbsolutePath)
-          val options = Seq("generate", "--schema", schema, "--output", output.getAbsolutePath) ++ queries
+          val options = Seq(
+            "generate",
+            "--schema",
+            sangriaCodegenSchema.value.getAbsolutePath,
+            "--object",
+            (name in sangriaCodegen).value,
+            "--output",
+            output.getAbsolutePath
+          ) ++ queries
 
           (runner in (SangriaCodegen, run)).value.run(
             (mainClass in SangriaCodegen).value.get,
