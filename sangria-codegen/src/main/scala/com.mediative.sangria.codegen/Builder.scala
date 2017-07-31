@@ -20,6 +20,7 @@ import java.io.File
 import scala.io.Source
 import cats.syntax.either._
 import sangria.parser.QueryParser
+import sangria.validation.QueryValidator
 import sangria.schema._
 import sangria.ast.Document
 
@@ -27,11 +28,22 @@ case class Builder private (
     schema: Result[Schema[_, _]],
     document: Result[Document] = Builder.emptyDocumentResult
 ) {
-  private def withQuery(query: => Result[Document]): Builder =
+  private def withQuery(query: => Result[Document]): Builder = {
+    val validatedQuery = schema.flatMap { validSchema =>
+      query.flatMap { loadedQuery =>
+        val violations = QueryValidator.default.validateQuery(validSchema, loadedQuery)
+        if (violations.isEmpty)
+          query
+        else
+          Left(Failure(s"Invalid query: ${violations.map(_.errorMessage).mkString(", ")}"))
+      }
+    }
+
     if (document == Builder.emptyDocumentResult)
-      copy(document = query)
+      copy(document = validatedQuery)
     else
-      copy(document = document.flatMap(doc => query.map(doc.merge)))
+      copy(document = document.flatMap(doc => validatedQuery.map(doc.merge)))
+  }
 
   def withQuery(query: Document): Builder =
     withQuery(Right(query))

@@ -1,5 +1,5 @@
 query BlogFragments($blogId: ID!, $pagination: Pagination!) {
-  blog(id: $id) {
+  blog(id: $blogId) {
     title
     articles(pagination: $pagination) {
       ...ArticleFragment
