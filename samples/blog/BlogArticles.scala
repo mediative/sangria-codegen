@@ -10,8 +10,8 @@ object BlogArticlesApi {
   }
   sealed trait ArticleStatus
   object ArticleStatus {
-    case object DRAFT extends ArticleStatus
-    case object PUBLISHED extends ArticleStatus
+    case object DRAFT extends BlogArticlesApi.ArticleStatus
+    case object PUBLISHED extends BlogArticlesApi.ArticleStatus
   }
   case class Pagination(first: Int, count: Int, reverse: Option[Boolean])
   type ID = String
