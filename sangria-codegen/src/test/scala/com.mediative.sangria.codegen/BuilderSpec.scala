@@ -18,6 +18,7 @@ package com.mediative.sangria.codegen
 
 import org.scalatest.WordSpec
 import java.io.File
+import sangria.parser.QueryParser
 
 class BuilderSpec extends WordSpec {
   import starwars.TestSchema.StarWarsSchema
@@ -42,6 +43,28 @@ class BuilderSpec extends WordSpec {
       assert(
         result == Left(Failure("Failed to read query-file-does-not-exist: " +
           "query-file-does-not-exist (No such file or directory)")))
+    }
+
+    "validate query documents" in {
+      val scala.util.Success(query) = QueryParser.parse("""
+        query HeroName($episdoe: Episode!) {
+          hero(episode: $episode) {
+            name
+          }
+        }
+      """)
+      val expectedMessage =
+        """Invalid query: Variable '$episode' is not defined by operation 'HeroName'. (line 3, column 25):
+          |          hero(episode: $episode) {
+          |                        ^
+          | (line 2, column 9):
+          |        query HeroName($episdoe: Episode!) {
+          |        ^, Variable '$episdoe' is not used in operation HeroName. (line 2, column 24):
+          |        query HeroName($episdoe: Episode!) {
+          |                       ^""".stripMargin
+      val Left(failure) = Builder(StarWarsSchema).withQuery(query).generate[Tree.Api]
+
+      assert(failure == Failure(expectedMessage))
     }
 
     "merge query documents" in {
