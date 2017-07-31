@@ -105,6 +105,7 @@ val sbtPlugin = project("sbt-sangria-codegen")
     scriptedSettings,
     // scriptedBufferLog := false,
     scriptedLaunchOpts += "-Dproject.version=" + version.value,
+    scriptedLaunchOpts += "-Dsamples.dir=" + ((baseDirectory in ThisBuild).value / "samples"),
     buildInfoKeys := Seq[BuildInfoKey](
       version,
       scalaVersion in ThisBuild,
