@@ -48,7 +48,7 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
     Term.Param(Vector.empty, Term.Name(paramName), Some(tpe), None)
 
   def generateTemplate(traits: Seq[String]): Template = {
-    val ctorNames = traits.map(Ctor.Name.apply)
+    val ctorNames = traits.map(moduleName + "." + _).map(Ctor.Name.apply)
     val emptySelf = Term.Param(Vector.empty, Name.Anonymous(), None, None)
     Template(Nil, ctorNames, emptySelf, None)
   }

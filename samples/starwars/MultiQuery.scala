@@ -23,8 +23,8 @@ object MultiQueryApi {
   case class FragmentExample(human: Option[MultiQueryApi.FragmentExample.Human], droid: MultiQueryApi.FragmentExample.Droid)
   object FragmentExample {
     case class FragmentExampleVariables()
-    case class Human(name: Option[String], appearsIn: Option[List[Option[Episode]]], homePlanet: Option[String]) extends Common
-    case class Droid(name: Option[String], appearsIn: Option[List[Option[Episode]]], primaryFunction: Option[String]) extends Common
+    case class Human(name: Option[String], appearsIn: Option[List[Option[Episode]]], homePlanet: Option[String]) extends MultiQueryApi.Common
+    case class Droid(name: Option[String], appearsIn: Option[List[Option[Episode]]], primaryFunction: Option[String]) extends MultiQueryApi.Common
   }
   case class VariableExample(human: Option[MultiQueryApi.VariableExample.Human])
   object VariableExample {
@@ -38,8 +38,8 @@ object MultiQueryApi {
   }
   sealed trait Episode
   object Episode {
-    case object NEWHOPE extends Episode
-    case object EMPIRE extends Episode
-    case object JEDI extends Episode
+    case object NEWHOPE extends MultiQueryApi.Episode
+    case object EMPIRE extends MultiQueryApi.Episode
+    case object JEDI extends MultiQueryApi.Episode
   }
 }
