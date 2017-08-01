@@ -56,8 +56,8 @@ import sbt.Keys._
  *
  * @example
  * {{{
- * sangriaCodegenSchema := sourceDirectory.value / "graphql" / "schema.graphql"
- * sangriaCodegenQueries += sourceDirectory.value / "graphql" / "api.graphql"
+ * sangriaCodegenSchema in Compile := sourceDirectory.value / "graphql" / "schema.graphql"
+ * sangriaCodegenQueries in Compile += sourceDirectory.value / "graphql" / "api.graphql"
  * }}}
  */
 object SangriaCodegenPlugin extends AutoPlugin {

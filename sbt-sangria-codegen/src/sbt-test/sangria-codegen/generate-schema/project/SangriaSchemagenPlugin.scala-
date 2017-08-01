@@ -1,0 +1,136 @@
+/*
+ * Copyright 2017 Mediative
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.mediative.sangria.codegen.sbt
+
+import sbt._
+import sbt.Keys._
+
+object BuildInfo {
+  val scalaVersion = "2.12.2"
+  val scalaBinaryVersion = "2.12"
+  val version = "0.0.5"
+}
+/**
+ * Generate API code based on a GraphQL schema and queries.
+ *
+ * == Usage ==
+ *
+ * This plugin must be explicitly enabled. To enable it add the following line
+ * to your `.sbt` file:
+ * {{{
+ * enablePlugins(SangriaCodegenPlugin)
+ * }}}
+ *
+ * By default, the plugin reads `*.graphql` files from the resources directory
+ * and generates a single Scala source files in the managed source directory.
+ *
+ * See the [[https://github.com/mediative/sangria-codegen/tree/master/sbt-sangria-codegen/src/sbt-test/sangria-codegen/generate example project]].
+ *
+ * == Configuration ==
+ *
+ * Keys are defined in [[SangriaCodegenPlugin.autoImport]].
+ *
+ *  - `sangriaSchemagenSchema`: The GraphQL schema file. *
+ *  - `sangriaSchemagenQueries`: GraphQL query documents. Defaults to `*.graphql`
+ *   files found inside  which are found inside the resources directory.
+ *
+ *  - `resourceDirectories in sangriaSchemagen`: The resource directories in which
+ *    to search for GraphQL query documents.
+ *
+ *  - `includeFilter in sangriaSchemagen`: Filter which query documents to include.
+ *    Defaults to `"*.graphql"`.
+ *
+ *  - `excludeFilter in sangriaSchemagen`: Filter out query documents.
+ *    Defaults to `HiddenFileFilter`.
+ *
+ *  - `name in sangriaSchemagen`: Name of the enclosing object.
+ *
+ * @example
+ * {{{
+ * sangriaSchemagenSchema := sourceDirectory.value / "graphql" / "schema.graphql"
+ * sangriaSchemagenQueries += sourceDirectory.value / "graphql" / "api.graphql"
+ * }}}
+ */
+object SangriaSchemagenPlugin extends AutoPlugin {
+
+  object autoImport {
+    val SangriaSchemagen     = config("sangria-schemagen") extend Compile
+    val sangriaSchemagenCode = taskKey[Option[String]]("Code to access the GraphQL Schema")
+    val sangriaSchemagenSchema = taskKey[File]("Code to access the GraphQL Schema")
+    val sangriaSchemagenLauncher = taskKey[File]("Generate GraphQL schema program")
+    val sangriaSchemagen     = taskKey[File]("Generate GraphQL schema file")
+  }
+  import autoImport._
+
+  override def requires = plugins.JvmPlugin
+
+  /**
+   * Add the IntegrationTest config to the project. The `extend(Test)`
+   * part makes it so classes in src/it have a classpath dependency on
+   * classes in src/test. This makes it simple to share common test
+   * helper code.
+   *
+   * See [[http://www.scala-sbt.org/release/docs/Testing.html#Custom+test+configuration]]
+   */
+  //override val projectConfigurations = Seq(SangriaSchemagen)
+
+  override def projectSettings: Seq[Setting[_]] =
+    sangriaSchemagenScopedSettings(SangriaSchemagen) ++ sangriaSchemagenDefaultSettings
+
+  def sangriaSchemagenDefaultSettings: Seq[Setting[_]] = Seq(
+    ivyConfigurations += SangriaSchemagen
+  )
+
+  def sangriaSchemagenScopedSettings(conf: Configuration): Seq[Setting[_]] =
+    inConfig(conf)(
+      Defaults.compileSettings ++
+      Seq(
+        sourceGenerators += Def.task {
+          val schemaCode = (sangriaSchemagenCode in Compile).value.get
+          val schemaFile = (sangriaSchemagenSchema in Compile).value
+          val file       = (sourceManaged in SangriaSchemagen).value / "sbt-sangria-codegen" / "SangriaSchemagen.scala"
+          val content = s"""
+            package com.mediative.sangria.codegen
+
+            object SangriaSchemagen {
+              val schema: sangria.schema.Schema[_, _] = {
+                $schemaCode
+              }
+
+              def main(args: Array[String]): Unit = {
+                val schemaFile = new java.io.File("${schemaFile.getAbsolutePath}")
+                println("Generating schema in ${schemaFile.getAbsolutePath}")
+                val graphql: String = schema.renderPretty
+                schemaFile.getParentFile.mkdirs()
+                new java.io.PrintWriter(schemaFile) {
+                  write(graphql)
+                  close
+                }
+              }
+            }
+          """
+          if (!file.exists || IO.read(file) != content)
+            IO.write(file, content)
+          Seq(file)
+        },
+        sangriaSchemagenSchema in Compile := (resourceManaged in Compile).value / "sbt-sangria-codegen" / "schema.graphql",
+        sangriaSchemagen := {
+          val x = runTask(conf, "com.mediative.sangria.codegen.SangriaSchemagen").value
+          (sangriaSchemagenSchema in Compile).value
+        }
+      ))
+}
