@@ -41,17 +41,17 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Generate API code based on a GraphQL schema and queries.</p><h4> Usage </h4><p>This plugin must be explicitly enabled. To enable it add the following line
 to your <code>.sbt</code> file:</p><pre>enablePlugins(SangriaCodegenPlugin)</pre><p>By default, the plugin reads <code>*.graphql</code> files from the resources directory
-and generates a single Scala source files in the managed source directory.</p><p>See the <a href="https://github.com/mediative/sangria-codegen/tree/master/sbt-sangria-codegen/src/sbt-test/sangria-codegen/generate" target="_blank">example project</a>.</p><p>Note, the plugin only works for project using Scala version 2.11.x or 2.12.x.</p><h4> Configuration </h4><p>Keys are defined in <a href="SangriaCodegenPlugin$$autoImport$.html" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin.autoImport">SangriaCodegenPlugin.autoImport</a>.</p><ul><li><code>sangriaCodegenSchema</code>: The GraphQL schema file. *</li><li><code>sangriaCodegenQueries</code>: GraphQL query documents. Defaults to <code>*.graphql</code>
+and generates a single Scala source files in the managed source directory.</p><p>See the <a href="https://github.com/mediative/sangria-codegen/tree/master/sbt-sangria-codegen/src/sbt-test/sangria-codegen/generate" target="_blank">example project</a>.</p><h4> Configuration </h4><p>Keys are defined in <a href="SangriaCodegenPlugin$$autoImport$.html" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin.autoImport">SangriaCodegenPlugin.autoImport</a>.</p><ul><li><code>sangriaCodegenSchema</code>: The GraphQL schema file. *</li><li><code>sangriaCodegenQueries</code>: GraphQL query documents. Defaults to <code>*.graphql</code>
   files found inside  which are found inside the resources directory.</li><li><code>resourceDirectories in sangriaCodegen</code>: The resource directories in which
    to search for GraphQL query documents.</li><li><code>includeFilter in sangriaCodegen</code>: Filter which query documents to include.
    Defaults to <code>&quot;*.graphql&quot;</code>.</li><li><code>excludeFilter in sangriaCodegen</code>: Filter out query documents.
-   Defaults to <code>HiddenFileFilter</code>.
+   Defaults to <code>HiddenFileFilter</code>.</li><li><code>name in sangriaCodegen</code>: Name of the enclosing object.
 </li></ul></div><dl class="attributes block"> <div class="block">Example:
-               <ol><li class="cmt"><p></p><pre>sangriaCodegenSchema := sourceDirectory.value / <span class="lit">"graphql"</span> / <span class="lit">"schema.graphql"</span>
-sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</span> / <span class="lit">"api.graphql"</span></pre></li></ol>
+               <ol><li class="cmt"><p></p><pre>sangriaCodegenSchema in Compile := sourceDirectory.value / <span class="lit">"graphql"</span> / <span class="lit">"schema.graphql"</span>
+sangriaCodegenQueries in Compile += sourceDirectory.value / <span class="lit">"graphql"</span> / <span class="lit">"api.graphql"</span></pre></li></ol>
             </div></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="sbt.AutoPlugin">AutoPlugin</span>, <span class="extype" name="sbt.PluginsFunctions">PluginsFunctions</span>, <span class="extype" name="sbt.Plugins.Basic">Basic</span>, <span class="extype" name="sbt.Plugins">Plugins</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="sbt.AutoPlugin">AutoPlugin</span>, <span class="extype" name="sbt.PluginsFunctions">PluginsFunctions</span>, <span class="extype" name="sbt.Plugins.Basic">Basic</span>, <span class="extype" name="sbt.Plugins">Plugins</span>, <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -104,7 +104,7 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -117,7 +117,7 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -156,7 +156,7 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -169,23 +169,10 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin#SupportedScalaVersions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SupportedScalaVersions:List[String]"></a>
-      <a id="SupportedScalaVersions:List[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">SupportedScalaVersions</span><span class="result">: <span class="extype" name="scala.collection.immutable.List">List</span>[<span class="extype" name="java.lang.String">String</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="sbt.PluginsFunctions#allRequirements" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="allRequirements:sbt.PluginTrigger"></a>
       <a id="allRequirements:PluginTrigger"></a>
@@ -247,7 +234,7 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -258,7 +245,7 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
               
         </dd></dl></div>
     </li><li name="sbt.AutoPlugin#derivedProjects" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="derivedProjects(proj:&lt;?&gt;):Seq[sbt.Project]"></a>
+      <a id="derivedProjects(proj:sbt.ProjectDefinition[_]):Seq[sbt.Project]"></a>
       <a id="derivedProjects(ProjectDefinition[_]):Seq[Project]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -292,7 +279,7 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -305,7 +292,7 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -415,7 +402,7 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -497,16 +484,29 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin">SangriaCodegenPlugin</a> → AutoPlugin</dd></dl></div>
-    </li><li name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin#sangriaCodegenCliDependency" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="sangriaCodegenCliDependency(scalaBinaryVersion:String):sbt.ModuleID"></a>
-      <a id="sangriaCodegenCliDependency(String):ModuleID"></a>
+    </li><li name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin#sangriaCodegenDefaultSettings" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sangriaCodegenDefaultSettings:Seq[sbt.Setting[_]]"></a>
+      <a id="sangriaCodegenDefaultSettings:Seq[Setting[_]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">sangriaCodegenCliDependency</span><span class="params">(<span name="scalaBinaryVersion">scalaBinaryVersion: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="sbt.ModuleID">ModuleID</span></span>
+        <span class="name">sangriaCodegenDefaultSettings</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../../../../sbt/package.html#Setting[T]=sbt.Def.Setting[T]" class="extmbr" name="sbt.Setting">Setting</a>[_]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin#sangriaCodegenScopedSettings" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sangriaCodegenScopedSettings(conf:sbt.Configuration):Seq[sbt.Setting[_]]"></a>
+      <a id="sangriaCodegenScopedSettings(Configuration):Seq[Setting[_]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sangriaCodegenScopedSettings</span><span class="params">(<span name="conf">conf: <span class="extype" name="sbt.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../../../../sbt/package.html#Setting[T]=sbt.Def.Setting[T]" class="extmbr" name="sbt.Setting">Setting</a>[_]]</span>
       </span>
       </h4>
       
@@ -624,9 +624,9 @@ sangriaCodegenQueries += sourceDirectory.value / <span class="lit">"graphql"</sp
             </div><div class="parent" name="sbt.Plugins">
               <h3>Inherited from <span class="extype" name="sbt.Plugins">Plugins</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         
         </div>

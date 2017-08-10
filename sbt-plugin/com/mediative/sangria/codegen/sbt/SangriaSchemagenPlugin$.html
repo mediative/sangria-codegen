@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>autoImport - com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin.autoImport</title>
-          <meta name="description" content="autoImport - com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin.autoImport" />
-          <meta name="keywords" content="autoImport com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin.autoImport" />
+          <title>SangriaSchemagenPlugin - com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin</title>
+          <meta name="description" content="SangriaSchemagenPlugin - com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin" />
+          <meta name="keywords" content="SangriaSchemagenPlugin com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin$$autoImport$';
+            var hash = 'com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -25,8 +25,8 @@
         <body class="value">
       <div id="definition">
         <img src="../../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.mediative">mediative</a>.<a href="../../package.html" class="extype" name="com.mediative.sangria">sangria</a>.<a href="../package.html" class="extype" name="com.mediative.sangria.codegen">codegen</a>.<a href="package.html" class="extype" name="com.mediative.sangria.codegen.sbt">sbt</a>.<a href="SangriaCodegenPlugin$.html" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin">SangriaCodegenPlugin</a></p>
-        <h1>autoImport</h1>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.mediative">mediative</a>.<a href="../../package.html" class="extype" name="com.mediative.sangria">sangria</a>.<a href="../package.html" class="extype" name="com.mediative.sangria.codegen">codegen</a>.<a href="package.html" class="extype" name="com.mediative.sangria.codegen.sbt">sbt</a></p>
+        <h1>SangriaSchemagenPlugin</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,13 +35,29 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">autoImport</span>
+        <span class="name">SangriaSchemagenPlugin</span><span class="result"> extends <span class="extype" name="sbt.AutoPlugin">AutoPlugin</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Generate GraphQL schema file from a Sangria schema instance.</p><h4> Usage </h4><p>This plugin must be explicitly enabled. To enable it add the following line
+to your <code>.sbt</code> file:</p><pre>enablePlugins(SangriaSchemagenPlugin)</pre><p>In addition, it is required to configure <code>sangriaSchemagenCode</code> with a snippet
+of Scala code providing access to your <code>sangria.schema.Schema[_, _]</code>.</p><p>See the <a href="https://github.com/mediative/sangria-codegen/tree/master/sbt-sangria-codegen/src/sbt-test/sangria-codegen/generate-schema" target="_blank">example project</a>.</p><h4> Using with <a href="SangriaCodegenPlugin$.html" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin">SangriaCodegenPlugin</a> </h4><p>To use this plugin to generate a schema for use with <a href="SangriaCodegenPlugin$.html" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin">SangriaCodegenPlugin</a>
+they must be configured in separate projects. For example, <a href="" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin">SangriaSchemagenPlugin</a>
+could be enabled in the server project which defines the Sangria schema, and
+<a href="SangriaCodegenPlugin$.html" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin">SangriaCodegenPlugin</a> will be enabled in the client project which consumes
+the GraphQL services.</p><p>See the <a href="https://github.com/mediative/sangria-codegen/tree/master/sbt-sangria-codegen/src/sbt-test/sangria-codegen/generate-schema-and-code" target="_blank">example project</a>.</p><h4> Implementation Details </h4><p>The plugins introduces a parallel build scope named <code>sangria-schemagen</code> and
+uses it for generating a program for executing the schema introspection code
+defined in <code>sangriaSchemagenSnippet</code>. The build scope depends on the normal
+<code>compile</code> scope so schema classes are available when running the program.
+Generate code can be found in <code>target/scala-2.x/src_managed/sangria-schemagen</code>
+and compile artifacts can be found in <code>target/scala-2.x/sangria-schemagen-classes</code>.</p><h4> Configuration </h4><p>Keys are defined in <a href="SangriaSchemagenPlugin$$autoImport$.html" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin.autoImport">SangriaSchemagenPlugin.autoImport</a>.</p><ul><li><code>sangriaSchemagenSnippet</code>: Code snippet to access the Sangria Schema.</li><li><code>sangriaSchemagenSchema</code>: GraphQL schema output file. Defaults to
+   file located inside <code>resourceManaged</code>.</li><li><code>sangriaSchemagen</code>: Generate the GraphQL schema file.
+</li></ul></div><dl class="attributes block"> <div class="block">Example:
+               <ol><li class="cmt"><p></p><pre>sangriaSchemagenSnippet in Compile := <span class="std">Some</span>(<span class="lit">"com.example.schema.GraphqlSchema"</span>)
+sangriaSchemagenSchema in Compile := (resourceDirectory in Compile).value / <span class="lit">"schema.graphql"</span></pre></li></ol>
+            </div></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="sbt.AutoPlugin">AutoPlugin</span>, <span class="extype" name="sbt.PluginsFunctions">PluginsFunctions</span>, <span class="extype" name="sbt.Plugins.Basic">Basic</span>, <span class="extype" name="sbt.Plugins">Plugins</span>, <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -59,7 +75,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin.autoImport"><span>autoImport</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin"><span>SangriaSchemagenPlugin</span></li><li class="in" name="sbt.AutoPlugin"><span>AutoPlugin</span></li><li class="in" name="sbt.PluginsFunctions"><span>PluginsFunctions</span></li><li class="in" name="sbt.Plugins.Basic"><span>Basic</span></li><li class="in" name="sbt.Plugins"><span>Plugins</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -124,6 +140,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="sbt.Plugins.Basic#&amp;&amp;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&amp;&amp;(o:sbt.Plugins.Basic):sbt.Plugins"></a>
+      <a id="&amp;&amp;(Basic):Plugins"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $amp$amp" class="name">&amp;&amp;</span><span class="params">(<span name="o">o: <span class="extype" name="sbt.Plugins.Basic">Basic</span></span>)</span><span class="result">: <span class="extype" name="sbt.Plugins">Plugins</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Basic → Plugins</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:AnyRef):Boolean"></a>
       <a id="==(AnyRef):Boolean"></a>
@@ -150,19 +179,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin.autoImport#SangriaCodegen" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SangriaCodegen:sbt.Configuration"></a>
-      <a id="SangriaCodegen:Configuration"></a>
+    </li><li name="sbt.PluginsFunctions#allRequirements" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="allRequirements:sbt.PluginTrigger"></a>
+      <a id="allRequirements:PluginTrigger"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">SangriaCodegen</span><span class="result">: <span class="extype" name="sbt.Configuration">Configuration</span></span>
+        <span class="name">allRequirements</span><span class="result">: <span class="extype" name="sbt.PluginTrigger">PluginTrigger</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PluginsFunctions</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -176,6 +205,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin.autoImport" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="autoImport"></a>
+      <a id="autoImport:autoImport"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SangriaSchemagenPlugin$$autoImport$.html"><span class="name">autoImport</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="sbt.AutoPlugin#buildSettings" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="buildSettings:Seq[sbt.Def.Setting[_]]"></a>
+      <a id="buildSettings:Seq[sbt.Def.Setting[_]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">buildSettings</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="sbt.Init.Setting">sbt.Def.Setting</span>[_]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoPlugin</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -195,6 +250,32 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="sbt.AutoPlugin#derivedProjects" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="derivedProjects(proj:&lt;?&gt;):Seq[sbt.Project]"></a>
+      <a id="derivedProjects(ProjectDefinition[_]):Seq[Project]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">derivedProjects</span><span class="params">(<span name="proj">proj: <span class="extype" name="sbt.ProjectDefinition">ProjectDefinition</span>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="sbt.Project">Project</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoPlugin</dd></dl></div>
+    </li><li name="sbt.PluginsFunctions#empty" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="empty:sbt.Plugins"></a>
+      <a id="empty:Plugins"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">empty</span><span class="result">: <span class="extype" name="sbt.Plugins">Plugins</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PluginsFunctions</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -221,6 +302,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="sbt.AutoPlugin#extraProjects" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="extraProjects:Seq[sbt.Project]"></a>
+      <a id="extraProjects:Seq[Project]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">extraProjects</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="sbt.Project">Project</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoPlugin</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -253,6 +347,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="sbt.AutoPlugin#globalSettings" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="globalSettings:Seq[sbt.Def.Setting[_]]"></a>
+      <a id="globalSettings:Seq[sbt.Def.Setting[_]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">globalSettings</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="sbt.Init.Setting">sbt.Def.Setting</span>[_]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoPlugin</dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -279,6 +386,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="sbt.AutoPlugin#label" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="label:String"></a>
+      <a id="label:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">label</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoPlugin</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -292,6 +412,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="sbt.PluginsFunctions#noTrigger" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="noTrigger:sbt.PluginTrigger"></a>
+      <a id="noTrigger:PluginTrigger"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">noTrigger</span><span class="result">: <span class="extype" name="sbt.PluginTrigger">PluginTrigger</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PluginsFunctions</dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -318,42 +451,68 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin.autoImport#sangriaCodegen" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="sangriaCodegen:sbt.TaskKey[sbt.File]"></a>
-      <a id="sangriaCodegen:TaskKey[File]"></a>
+    </li><li name="sbt.AutoPlugin#projectConfigurations" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="projectConfigurations:Seq[sbt.Configuration]"></a>
+      <a id="projectConfigurations:Seq[Configuration]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">sangriaCodegen</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<a href="../../../../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>
+        <span class="name">projectConfigurations</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="sbt.Configuration">Configuration</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoPlugin</dd></dl></div>
+    </li><li name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin#projectSettings" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="projectSettings:Seq[sbt.Setting[_]]"></a>
+      <a id="projectSettings:Seq[Setting[_]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">projectSettings</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../../../../sbt/package.html#Setting[T]=sbt.Def.Setting[T]" class="extmbr" name="sbt.Setting">Setting</a>[_]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin">SangriaSchemagenPlugin</a> → AutoPlugin</dd></dl></div>
+    </li><li name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin#requires" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="requires:sbt.plugins.JvmPlugin.type"></a>
+      <a id="requires:JvmPlugin.type"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">requires</span><span class="result">: <span class="extype" name="sbt.plugins.JvmPlugin">JvmPlugin</span>.type</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin">SangriaSchemagenPlugin</a> → AutoPlugin</dd></dl></div>
+    </li><li name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin#sangriaSchemagenDefaultSettings" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sangriaSchemagenDefaultSettings:Seq[sbt.Setting[_]]"></a>
+      <a id="sangriaSchemagenDefaultSettings:Seq[Setting[_]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sangriaSchemagenDefaultSettings</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../../../../sbt/package.html#Setting[T]=sbt.Def.Setting[T]" class="extmbr" name="sbt.Setting">Setting</a>[_]]</span>
       </span>
       </h4>
       
-    </li><li name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin.autoImport#sangriaCodegenQueries" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="sangriaCodegenQueries:sbt.TaskKey[Seq[sbt.File]]"></a>
-      <a id="sangriaCodegenQueries:TaskKey[Seq[File]]"></a>
+    </li><li name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin#sangriaSchemagenScopedSettings" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sangriaSchemagenScopedSettings(introspection:sbt.Configuration,runtime:sbt.Configuration):Seq[sbt.Setting[_]]"></a>
+      <a id="sangriaSchemagenScopedSettings(Configuration,Configuration):Seq[Setting[_]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">sangriaCodegenQueries</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../../../../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin.autoImport#sangriaCodegenSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="sangriaCodegenSchema:sbt.TaskKey[sbt.File]"></a>
-      <a id="sangriaCodegenSchema:TaskKey[File]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">sangriaCodegenSchema</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<a href="../../../../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>
+        <span class="name">sangriaSchemagenScopedSettings</span><span class="params">(<span name="introspection">introspection: <span class="extype" name="sbt.Configuration">Configuration</span></span>, <span name="runtime">runtime: <span class="extype" name="sbt.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../../../../sbt/package.html#Setting[T]=sbt.Def.Setting[T]" class="extmbr" name="sbt.Setting">Setting</a>[_]]</span>
       </span>
       </h4>
       
@@ -370,7 +529,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="sbt.AutoPlugin#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -379,10 +538,23 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoPlugin → AnyRef → Any</dd></dl></div>
+    </li><li name="sbt.AutoPlugin#trigger" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="trigger:sbt.PluginTrigger"></a>
+      <a id="trigger:PluginTrigger"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">trigger</span><span class="result">: <span class="extype" name="sbt.PluginTrigger">PluginTrigger</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoPlugin</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -449,7 +621,15 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="sbt.AutoPlugin">
+              <h3>Inherited from <span class="extype" name="sbt.AutoPlugin">AutoPlugin</span></h3>
+            </div><div class="parent" name="sbt.PluginsFunctions">
+              <h3>Inherited from <span class="extype" name="sbt.PluginsFunctions">PluginsFunctions</span></h3>
+            </div><div class="parent" name="sbt.Plugins.Basic">
+              <h3>Inherited from <span class="extype" name="sbt.Plugins.Basic">Basic</span></h3>
+            </div><div class="parent" name="sbt.Plugins">
+              <h3>Inherited from <span class="extype" name="sbt.Plugins">Plugins</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.6/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
