@@ -24,12 +24,20 @@ import cats.implicits._
 /**
  * Generate code using Scalameta.
  */
-case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.empty)
+case class ScalametaGenerator(
+    moduleName: Term.Name,
+    emitInterfaces: Boolean = false,
+    stats: Seq[Stat] = Vector.empty)
     extends Generator[Defn.Object] {
 
   override def generate(api: Tree.Api): Result[Defn.Object] = {
     val operations = api.operations.flatMap(generateOperation)
-    val fragments  = api.interfaces.map(generateInterface)
+    val fragments =
+      if (emitInterfaces)
+        api.interfaces.map(generateInterface)
+      else
+        Seq.empty
+
     for {
       types <- api.types.map(generateType).toList.sequenceU
     } yield {
@@ -97,7 +105,10 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
 
           val tpeName  = Type.Name(name.capitalize)
           val termName = Term.Name(name.capitalize)
-          val template = generateTemplate(selection.interfaces)
+          val interfaces =
+            if (emitInterfaces) selection.interfaces
+            else Seq.empty
+          val template = generateTemplate(interfaces)
 
           Vector(q"case class $tpeName(..$params) extends $template") ++
             Option(stats)
@@ -151,7 +162,10 @@ case class ScalametaGenerator(moduleName: Term.Name, stats: Seq[Stat] = Vector.e
 
   def generateType(tree: Tree.Type): Result[Seq[Stat]] = tree match {
     case interface: Tree.Interface =>
-      Right(Vector(generateInterface(interface)))
+      if (emitInterfaces)
+        Right(Vector(generateInterface(interface)))
+      else
+        Right(Vector.empty)
 
     case Tree.Object(name, fields) =>
       val params = fields.map { field =>

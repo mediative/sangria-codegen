@@ -23,18 +23,14 @@ object MultiQueryApi {
   case class FragmentExample(human: Option[MultiQueryApi.FragmentExample.Human], droid: MultiQueryApi.FragmentExample.Droid)
   object FragmentExample {
     case class FragmentExampleVariables()
-    case class Human(name: Option[String], appearsIn: Option[List[Option[Episode]]], homePlanet: Option[String]) extends MultiQueryApi.Common
-    case class Droid(name: Option[String], appearsIn: Option[List[Option[Episode]]], primaryFunction: Option[String]) extends MultiQueryApi.Common
+    case class Human(name: Option[String], appearsIn: Option[List[Option[Episode]]], homePlanet: Option[String])
+    case class Droid(name: Option[String], appearsIn: Option[List[Option[Episode]]], primaryFunction: Option[String])
   }
   case class VariableExample(human: Option[MultiQueryApi.VariableExample.Human])
   object VariableExample {
     case class VariableExampleVariables(humanId: String)
     case class Human(name: Option[String], homePlanet: Option[String], friends: Option[List[Option[MultiQueryApi.VariableExample.Human.Friends]]])
     object Human { case class Friends(name: Option[String]) }
-  }
-  trait Common {
-    def name: Option[String]
-    def appearsIn: Option[List[Option[Episode]]]
   }
   sealed trait Episode
   object Episode {
