@@ -48,11 +48,6 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       ()
   }
 
-  def isObjectLike(tpe: Type): Boolean = tpe.namedType match {
-    case underlying @ (_: ObjectLikeType[_, _] | _: InputObjectType[_]) => true
-    case _                                                              => false
-  }
-
   def generateField(
       touch: Boolean,
       name: String,
@@ -71,12 +66,16 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     val result = node match {
       case field: ast.Field =>
         typeInfo.tpe match {
-          case Some(tpe) if !isObjectLike(tpe) =>
-            Tree.Selection(Vector(generateField(touch = true, field.outputName, tpe)))
-
           case Some(tpe) =>
-            val gen = generateSelections(field.selections)
-            Tree.Selection(Vector(generateField(touch = false, field.outputName, tpe, Some(gen))))
+            tpe.namedType match {
+              case obj @ (_: ObjectLikeType[_, _] | _: InputObjectType[_]) =>
+                val gen = generateSelections(field.selections)
+                Tree.Selection(
+                  Vector(generateField(touch = false, field.outputName, tpe, Some(gen))))
+
+              case _ =>
+                Tree.Selection(Vector(generateField(touch = true, field.outputName, tpe)))
+            }
 
           case _ =>
             sys.error("Field without type: " + field)
