@@ -72,7 +72,7 @@ import sbt.Keys._
 object SangriaSchemagenPlugin extends AutoPlugin {
 
   object autoImport {
-    val SangriaSchemagen        = config("sangria-schemagen") extend Compile
+    val SangriaSchemagen        = config("sangria-schemagen").extend(Compile).hide
     val sangriaSchemagenSnippet = taskKey[Option[String]]("Code to access the Sangria schema")
     val sangriaSchemagenSchema  = taskKey[File]("GraphQL schema output file")
     val sangriaSchemagen        = taskKey[File]("Generate GraphQL schema file")

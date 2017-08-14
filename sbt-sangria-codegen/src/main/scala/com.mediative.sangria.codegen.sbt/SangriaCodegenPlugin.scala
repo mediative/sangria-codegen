@@ -63,7 +63,7 @@ import sbt.Keys._
 object SangriaCodegenPlugin extends AutoPlugin {
 
   object autoImport {
-    val SangriaCodegen        = config("sangria-codegen")
+    val SangriaCodegen        = config("sangria-codegen").hide
     val sangriaCodegenSchema  = taskKey[File]("GraphQL schema file")
     val sangriaCodegenQueries = taskKey[Seq[File]]("GraphQL query documents")
     val sangriaCodegen        = taskKey[File]("Generate GraphQL API code")
