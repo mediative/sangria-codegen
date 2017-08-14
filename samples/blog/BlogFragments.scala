@@ -23,6 +23,11 @@ object BlogFragmentsApi {
     def title: String
     def author: IdFragment with AuthorFragment
   }
-  case class Pagination(first: Int, count: Int, reverse: Option[Boolean])
+  case class Pagination(first: Int, count: Int, order: Option[PaginationOrder])
+  sealed trait PaginationOrder
+  object PaginationOrder {
+    case object ASC extends BlogFragmentsApi.PaginationOrder
+    case object DESC extends BlogFragmentsApi.PaginationOrder
+  }
   type ID = String
 }
