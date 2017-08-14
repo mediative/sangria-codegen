@@ -6,12 +6,23 @@ schema {
 type Query {
   blogs(pagination: Pagination!, query: String): [Blog!]!
   blog(id: ID!): Blog!
+  articles(query: ArticleQuery): [Article!]!
 }
 
 input Pagination {
   first: Int!
   count: Int!
-  reverse: Boolean = false
+  order: PaginationOrder = ASC
+}
+
+enum PaginationOrder {
+  ASC
+  DESC
+}
+
+input ArticleQuery {
+  ids: [ID!]
+  statuses: [ArticleStatus!]
 }
 
 interface Identifiable {

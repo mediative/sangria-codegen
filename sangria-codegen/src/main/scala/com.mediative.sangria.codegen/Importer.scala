@@ -40,10 +40,13 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     case IDType =>
       types += tpe
       ()
-    case scalar: ScalarType[_] =>
+    case _: ScalarType[_] =>
       // Nothing
       ()
-    case underlying @ (_: OutputType[_] | _: InputObjectType[_]) =>
+    case input: InputObjectType[_] =>
+      types += input
+      input.fields.foreach(field => touchType(field.fieldType))
+    case underlying: OutputType[_] =>
       types += underlying
       ()
   }
