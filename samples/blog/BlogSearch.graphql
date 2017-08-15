@@ -67,9 +67,15 @@ fragment SearchResultOnIdentifiableFragment on Identifiable {
     ...BlogFragment
   }
   ... on Article {
-    ...ArticleFragment
+    __typename
+    title
+    status
+    author {
+      name
+    }
   }
   ... on Author {
-    ...AuthorFragment
+    __typename
+    name
   }
 }

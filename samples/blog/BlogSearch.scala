@@ -20,7 +20,7 @@ object BlogSearchApi {
     object SearchOnImplements {
       case class Blog(id: BlogSearchApi.ID, __typename: String, title: String) extends BlogSearchApi.BlogSearch.SearchOnImplements
       case class Article(id: BlogSearchApi.ID, __typename: String, title: String, status: ArticleStatus, author: BlogSearchApi.BlogSearch.SearchOnImplements.Article.Author) extends BlogSearchApi.BlogSearch.SearchOnImplements
-      object Article { case class Author(__typename: String, name: String) }
+      object Article { case class Author(name: String) }
       case class Author(id: BlogSearchApi.ID, __typename: String, name: String) extends BlogSearchApi.BlogSearch.SearchOnImplements
     }
   }
