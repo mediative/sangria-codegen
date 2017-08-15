@@ -7,6 +7,7 @@ type Query {
   blogs(pagination: Pagination!, query: String): [Blog!]!
   blog(id: ID!): Blog!
   articles(query: ArticleQuery): [Article!]!
+  search(text: String!, pagination: Pagination!): [SearchResult!]!
 }
 
 input Pagination {
@@ -56,6 +57,8 @@ type Author implements Identifiable {
   name: String!
   articles(pagination: Pagination!): [Article!]!
 }
+
+union SearchResult = Blog | Article | Author
 
 type Mutation {
   addBlog(title: String!, uri: String!): Blog!

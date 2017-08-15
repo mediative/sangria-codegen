@@ -47,8 +47,12 @@ abstract class CodegenBaseSpec(name: String, schema: Option[Schema[_, _]] = None
         val Right(out) = builder
           .withQuery(input)
           .generate(generator)
+        val actual = out.show[Syntax]
 
-        assert(out.show[Syntax].trim == contentOf(expected).trim)
+        if (actual.trim != contentOf(expected).trim)
+          println(actual)
+
+        assert(actual.trim == contentOf(expected).trim)
       }
     }
   }
