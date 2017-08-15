@@ -33,7 +33,7 @@ class GraphQLDomain(operations: String, schema: String) extends StaticAnnotation
 
     defn match {
       case q"object $tname { ..$stats }" =>
-        val generator = ScalametaGenerator(tname, stats)
+        val generator = ScalametaGenerator(tname, emitInterfaces = false, stats)
         val result = Builder(new File(schemaPath))
           .withQuery(new File(operationsPath))
           .generate(generator)
