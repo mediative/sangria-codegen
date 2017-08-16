@@ -6,20 +6,19 @@ Jvm.`1.8`.required
 inThisBuild(
   Def.settings(
     organization := "com.mediative",
-    scalaVersion := "2.12.2",
-    crossScalaVersions := Seq("2.11.11", "2.12.2"),
+    scalaVersion := "2.12.3",
+    crossScalaVersions := Seq("2.11.11", "2.12.3"),
     scalacOptions += "-Ywarn-unused-import",
     publishArtifact in (Compile, packageDoc) := false,
     publishArtifact in (Compile, packageSrc) := false,
     watchSources ++= (((baseDirectory in ThisBuild).value / "samples") ** "*").get,
-    doctestTestFramework := DoctestTestFramework.ScalaTest,
-    doctestWithDependencies := false
+    doctestTestFramework := DoctestTestFramework.ScalaTest
   ))
 
 lazy val macroAnnotationSettings = Seq(
   resolvers += Resolver.sonatypeRepo("releases"),
   resolvers += Resolver.bintrayRepo("scalameta", "maven"),
-  addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M9" cross CrossVersion.full),
+  addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M10" cross CrossVersion.full),
   scalacOptions += "-Xplugin-require:macroparadise",
   scalacOptions in (Compile, console) ~= (_ filterNot (_ contains "paradise")) // macroparadise plugin doesn't work in repl yet.
 )
