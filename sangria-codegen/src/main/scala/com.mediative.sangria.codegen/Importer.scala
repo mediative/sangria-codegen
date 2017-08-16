@@ -83,32 +83,26 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     typeInfo.enter(node)
     val result = node match {
       case field: ast.Field =>
-        typeInfo.tpe match {
-          case Some(tpe) =>
-            tpe.namedType match {
-              case union: UnionType[_] =>
-                val types = union.types.toList.map { tpe =>
-                  // Prepend the union type name to include and descend into fragment spreads
-                  val conditions = (union.name +: tpe.name +: tpe.interfaces.map(_.name)).toSet
-                  val selection  = generateSelections(field.selections, conditions)
-                  Tree.UnionSelection(tpe, selection)
-                }
-
-                Tree.Selection(
-                  Vector(generateField(touch = false, field.outputName, tpe, union = types)))
-
-              case obj @ (_: ObjectLikeType[_, _] | _: InputObjectType[_]) =>
-                val gen = generateSelections(field.selections)
-                Tree.Selection(
-                  Vector(
-                    generateField(touch = false, field.outputName, tpe, selection = Some(gen))))
-
-              case _ =>
-                Tree.Selection(Vector(generateField(touch = true, field.outputName, tpe)))
+        require(typeInfo.tpe.isDefined, s"Field without type: $field")
+        val tpe = typeInfo.tpe.get
+        tpe.namedType match {
+          case union: UnionType[_] =>
+            val types = union.types.toList.map { tpe =>
+              // Prepend the union type name to include and descend into fragment spreads
+              val conditions = (union.name +: tpe.name +: tpe.interfaces.map(_.name)).toSet
+              val selection  = generateSelections(field.selections, conditions)
+              Tree.UnionSelection(tpe, selection)
             }
+            Tree.Selection(
+              Vector(generateField(touch = false, field.outputName, tpe, union = types)))
 
-          case None =>
-            sys.error("Field without type: " + field)
+          case obj @ (_: ObjectLikeType[_, _] | _: InputObjectType[_]) =>
+            val gen = generateSelections(field.selections)
+            Tree.Selection(
+              Vector(generateField(touch = false, field.outputName, tpe, selection = Some(gen))))
+
+          case _ =>
+            Tree.Selection(Vector(generateField(touch = true, field.outputName, tpe)))
         }
 
       case fragmentSpread: ast.FragmentSpread =>
