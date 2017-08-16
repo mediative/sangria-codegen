@@ -37,6 +37,12 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
           .toVector
       ))
 
+  /**
+   * Marks a schema type so it is added to the imported AST.
+   *
+   * Must be explicitly called for each type that a field references. For example,
+   * to generate a field which has an enum type this method should be called.
+   */
   def touchType(tpe: Type): Unit = tpe.namedType match {
     case IDType =>
       types += tpe
@@ -53,17 +59,6 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     case underlying: OutputType[_] =>
       types += underlying
       ()
-  }
-
-  def generateField(
-      touch: Boolean,
-      name: String,
-      tpe: Type,
-      selection: Option[Tree.Selection] = None,
-      union: Seq[Tree.UnionSelection] = Seq.empty): Tree.Field = {
-    if (touch)
-      touchType(tpe)
-    Tree.Field(name, tpe, selection, union)
   }
 
   def generateSelections(
@@ -92,16 +87,15 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
               val selection  = generateSelections(field.selections, conditions)
               Tree.UnionSelection(tpe, selection)
             }
-            Tree.Selection(
-              Vector(generateField(touch = false, field.outputName, tpe, union = types)))
+            Tree.Selection(Tree.Field(field.outputName, tpe, union = types))
 
           case obj @ (_: ObjectLikeType[_, _] | _: InputObjectType[_]) =>
             val gen = generateSelections(field.selections)
-            Tree.Selection(
-              Vector(generateField(touch = false, field.outputName, tpe, selection = Some(gen))))
+            Tree.Selection(Tree.Field(field.outputName, tpe, selection = Some(gen)))
 
           case _ =>
-            Tree.Selection(Vector(generateField(touch = true, field.outputName, tpe)))
+            touchType(tpe)
+            Tree.Selection(Tree.Field(field.outputName, tpe))
         }
 
       case fragmentSpread: ast.FragmentSpread =>
@@ -131,7 +125,8 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     val variables = operation.variables.toVector.map { varDef =>
       schema.getInputType(varDef.tpe) match {
         case Some(tpe) =>
-          generateField(touch = true, varDef.name, tpe)
+          touchType(tpe)
+          Tree.Field(varDef.name, tpe)
         case None =>
           sys.error("Unknown input type: " + varDef.tpe)
       }
@@ -151,7 +146,8 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
 
   def generateObject(obj: ObjectType[_, _]): Tree.Object = {
     val fields = obj.uniqueFields.map { field =>
-      generateField(touch = true, field.name, field.fieldType)
+      touchType(field.fieldType)
+      Tree.Field(field.name, field.fieldType)
     }
     Tree.Object(obj.name, fields)
   }
@@ -159,7 +155,8 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
   def generateType(tpe: Type): Option[Tree.Type] = tpe match {
     case interface: InterfaceType[_, _] =>
       val fields = interface.uniqueFields.map { field =>
-        generateField(touch = true, field.name, field.fieldType)
+        touchType(field.fieldType)
+        Tree.Field(field.name, field.fieldType)
       }
       Some(Tree.Interface(interface.name, fields))
 
@@ -175,7 +172,8 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
 
     case inputObj: InputObjectType[_] =>
       val fields = inputObj.fields.map { field =>
-        generateField(touch = true, field.name, field.fieldType)
+        touchType(field.fieldType)
+        Tree.Field(field.name, field.fieldType)
       }
       Some(Tree.Object(inputObj.name, fields))
 

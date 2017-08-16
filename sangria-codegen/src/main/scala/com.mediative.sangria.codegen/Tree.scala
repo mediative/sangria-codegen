@@ -27,8 +27,8 @@ object Tree {
   case class Field(
       name: String,
       tpe: schema.Type,
-      selection: Option[Selection],
-      union: Seq[UnionSelection])
+      selection: Option[Selection] = None,
+      union: Seq[UnionSelection] = Seq.empty)
       extends Tree {
     def isObjectLike = selection.nonEmpty
     def isUnion      = union.nonEmpty
@@ -40,6 +40,8 @@ object Tree {
   }
   object Selection {
     final val empty = Selection(Vector.empty)
+    def apply(field: Field): Selection =
+      Selection(Vector(field))
   }
 
   case class UnionSelection(tpe: schema.ObjectType[_, _], selection: Selection) extends Tree
