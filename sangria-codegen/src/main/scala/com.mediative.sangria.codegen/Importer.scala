@@ -50,7 +50,6 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     case union: UnionType[_] =>
       types += union
       union.types.flatMap(_.fields.map(_.fieldType)).foreach(touchType)
-      ()
     case underlying: OutputType[_] =>
       types += underlying
       ()
