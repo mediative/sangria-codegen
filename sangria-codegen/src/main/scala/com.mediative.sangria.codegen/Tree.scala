@@ -24,17 +24,27 @@ import sangria.schema
  */
 sealed trait Tree
 object Tree {
-  case class Field(name: String, tpe: schema.Type, selection: Option[Selection] = None)
+  case class Field(
+      name: String,
+      tpe: schema.Type,
+      selection: Option[Selection] = None,
+      union: Seq[UnionSelection] = Seq.empty)
       extends Tree {
     def isObjectLike = selection.nonEmpty
+    def isUnion      = union.nonEmpty
   }
+
   case class Selection(fields: Seq[Field], interfaces: Seq[String] = Vector.empty) extends Tree {
     def +(that: Selection) =
       Selection((this.fields ++ that.fields).distinct, this.interfaces ++ that.interfaces)
   }
   object Selection {
     final val empty = Selection(Vector.empty)
+    def apply(field: Field): Selection =
+      Selection(Vector(field))
   }
+
+  case class UnionSelection(tpe: schema.ObjectType[_, _], selection: Selection) extends Tree
 
   /**
    * Operations represent API calls and are the entry points to the API.
@@ -52,6 +62,7 @@ object Tree {
   case class Interface(name: String, fields: Seq[Field]) extends Type
   case class Enum(name: String, vaules: Seq[String])     extends Type
   case class TypeAlias(name: String, tpe: String)        extends Type
+  case class Union(name: String, types: Seq[Object])     extends Type
 
   /**
    * The API based on one or more GraphQL query documents using a given schema.

@@ -16,6 +16,7 @@
 
 package com.mediative.sangria.codegen
 
+import scala.collection.immutable.Seq
 import sangria.validation.TypeInfo
 import sangria.schema._
 import sangria.ast
@@ -36,6 +37,12 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
           .toVector
       ))
 
+  /**
+   * Marks a schema type so it is added to the imported AST.
+   *
+   * Must be explicitly called for each type that a field references. For example,
+   * to generate a field which has an enum type this method should be called.
+   */
   def touchType(tpe: Type): Unit = tpe.namedType match {
     case IDType =>
       types += tpe
@@ -46,51 +53,65 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     case input: InputObjectType[_] =>
       types += input
       input.fields.foreach(field => touchType(field.fieldType))
+    case union: UnionType[_] =>
+      types += union
+      union.types.flatMap(_.fields.map(_.fieldType)).foreach(touchType)
     case underlying: OutputType[_] =>
       types += underlying
       ()
   }
 
-  def generateField(
-      touch: Boolean,
-      name: String,
-      tpe: Type,
-      selection: Option[Tree.Selection] = None): Tree.Field = {
-    if (touch)
-      touchType(tpe)
-    Tree.Field(name, tpe, selection)
-  }
+  def generateSelections(
+      selections: Seq[ast.Selection],
+      typeConditions: Set[String] = Set.empty): Tree.Selection =
+    selections.map(generateSelection(typeConditions)).foldLeft(Tree.Selection.empty)(_ + _)
 
-  def generateSelections(selections: Seq[ast.Selection]): Tree.Selection =
-    selections.map(generateSelection).foldLeft(Tree.Selection.empty)(_ + _)
+  def generateSelection(typeConditions: Set[String])(node: ast.AstNode): Tree.Selection = {
+    def filteredByTypeCondition(namedType: Option[ast.NamedType])(
+        f: => Tree.Selection): Tree.Selection =
+      if (typeConditions.nonEmpty && !namedType.map(_.name).filter(typeConditions).isDefined)
+        Tree.Selection.empty
+      else
+        f
 
-  def generateSelection(node: ast.AstNode): Tree.Selection = {
     typeInfo.enter(node)
     val result = node match {
       case field: ast.Field =>
-        typeInfo.tpe match {
-          case Some(tpe) =>
-            tpe.namedType match {
-              case obj @ (_: ObjectLikeType[_, _] | _: InputObjectType[_]) =>
-                val gen = generateSelections(field.selections)
-                Tree.Selection(
-                  Vector(generateField(touch = false, field.outputName, tpe, Some(gen))))
-
-              case _ =>
-                Tree.Selection(Vector(generateField(touch = true, field.outputName, tpe)))
+        require(typeInfo.tpe.isDefined, s"Field without type: $field")
+        val tpe = typeInfo.tpe.get
+        tpe.namedType match {
+          case union: UnionType[_] =>
+            val types = union.types.toList.map { tpe =>
+              // Prepend the union type name to include and descend into fragment spreads
+              val conditions = (union.name +: tpe.name +: tpe.interfaces.map(_.name)).toSet
+              val selection  = generateSelections(field.selections, conditions)
+              Tree.UnionSelection(tpe, selection)
             }
+            Tree.Selection(Tree.Field(field.outputName, tpe, union = types))
+
+          case obj @ (_: ObjectLikeType[_, _] | _: InputObjectType[_]) =>
+            val gen = generateSelections(field.selections)
+            Tree.Selection(Tree.Field(field.outputName, tpe, selection = Some(gen)))
 
           case _ =>
-            sys.error("Field without type: " + field)
+            touchType(tpe)
+            Tree.Selection(Tree.Field(field.outputName, tpe))
         }
 
       case fragmentSpread: ast.FragmentSpread =>
         val name     = fragmentSpread.name
         val fragment = document.fragments(fragmentSpread.name)
-        generateSelections(fragment.selections).copy(interfaces = Vector(name))
+        // Sangria's TypeInfo abstraction does not resolve fragment spreads
+        // when traversing, so explicitly enter to resolved fragment.
+        typeInfo.enter(fragment)
+        val result = filteredByTypeCondition(Some(fragment.typeCondition))(
+          generateSelections(fragment.selections, typeConditions).copy(interfaces = Vector(name)))
+        typeInfo.leave(fragment)
+        result
 
       case inlineFragment: ast.InlineFragment =>
-        generateSelections(inlineFragment.selections)
+        filteredByTypeCondition(inlineFragment.typeCondition)(
+          generateSelections(inlineFragment.selections))
 
       case unknown =>
         sys.error("Unknown selection: " + unknown.toString)
@@ -104,7 +125,8 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     val variables = operation.variables.toVector.map { varDef =>
       schema.getInputType(varDef.tpe) match {
         case Some(tpe) =>
-          generateField(touch = true, varDef.name, tpe)
+          touchType(tpe)
+          Tree.Field(varDef.name, tpe)
         case None =>
           sys.error("Unknown input type: " + varDef.tpe)
       }
@@ -122,29 +144,36 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     Tree.Interface(fragment.name, selection.fields)
   }
 
+  def generateObject(obj: ObjectType[_, _]): Tree.Object = {
+    val fields = obj.uniqueFields.map { field =>
+      touchType(field.fieldType)
+      Tree.Field(field.name, field.fieldType)
+    }
+    Tree.Object(obj.name, fields)
+  }
+
   def generateType(tpe: Type): Option[Tree.Type] = tpe match {
     case interface: InterfaceType[_, _] =>
       val fields = interface.uniqueFields.map { field =>
-        generateField(touch = true, field.name, field.fieldType)
+        touchType(field.fieldType)
+        Tree.Field(field.name, field.fieldType)
       }
       Some(Tree.Interface(interface.name, fields))
 
-    case obj: ObjectLikeType[_, _] =>
-      val fields = obj.uniqueFields.map { field =>
-        generateField(touch = true, field.name, field.fieldType)
-      }
-      Some(Tree.Object(obj.name, fields))
+    case obj: ObjectType[_, _] =>
+      Some(generateObject(obj))
 
     case enum: EnumType[_] =>
       val values = enum.values.map(_.name)
       Some(Tree.Enum(enum.name, values))
 
     case union: UnionType[_] =>
-      None
+      Some(Tree.Union(union.name, union.types.map(generateObject)))
 
     case inputObj: InputObjectType[_] =>
       val fields = inputObj.fields.map { field =>
-        generateField(touch = true, field.name, field.fieldType)
+        touchType(field.fieldType)
+        Tree.Field(field.name, field.fieldType)
       }
       Some(Tree.Object(inputObj.name, fields))
 
