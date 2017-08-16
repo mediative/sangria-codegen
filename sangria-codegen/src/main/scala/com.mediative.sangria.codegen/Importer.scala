@@ -107,6 +107,8 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       case fragmentSpread: ast.FragmentSpread =>
         val name     = fragmentSpread.name
         val fragment = document.fragments(fragmentSpread.name)
+        // Sangria's TypeInfo abstraction does not resolve fragment spreads
+        // when traversing, so explicitly enter to resolved fragment.
         typeInfo.enter(fragment)
         val result = filteredByTypeCondition(Some(fragment.typeCondition))(
           generateSelections(fragment.selections, typeConditions).copy(interfaces = Vector(name)))
