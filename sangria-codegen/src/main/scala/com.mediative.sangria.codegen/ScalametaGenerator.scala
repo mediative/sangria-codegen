@@ -193,7 +193,6 @@ case class ScalametaGenerator(
     }
     val className = Type.Name(obj.name)
     val template  = generateTemplate(interfaces)
-    // FIXME: val interfaces = obj.interfaces.
     q"case class $className(..$params) extends $template": Stat
   }
 
