@@ -30,7 +30,7 @@ import sbt.Keys._
  * enablePlugins(SangriaSchemagenPlugin)
  * }}}
  *
- * In addition, it is required to configure `sangriaSchemagenCode` with a snippet
+ * In addition, it is required to configure `sangriaSchemagenSnippet` with a snippet
  * of Scala code providing access to your `sangria.schema.Schema[_, _]`.
  *
  * See the [[https://github.com/mediative/sangria-codegen/tree/master/sbt-sangria-codegen/src/sbt-test/sangria-codegen/generate-schema example project]].
