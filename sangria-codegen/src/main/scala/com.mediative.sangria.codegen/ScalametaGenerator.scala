@@ -30,7 +30,7 @@ case class ScalametaGenerator(
     stats: Seq[Stat] = Vector.empty)
     extends Generator[Defn.Object] {
 
-  override def generate(api: Tree.Api): Result[Defn.Object] = {
+  override def apply(api: Tree.Api): Result[Defn.Object] = {
     val operations = api.operations.flatMap(generateOperation)
     val fragments =
       if (emitInterfaces)
