@@ -19,7 +19,6 @@ package com.mediative.sangria.codegen
 import scala.collection.immutable.Seq
 import scala.meta._
 import sangria.schema
-import cats.implicits._
 
 /**
  * Generate code using Scalameta.
@@ -30,26 +29,25 @@ case class ScalametaGenerator(
     stats: Seq[Stat] = Vector.empty)
     extends Generator[Defn.Object] {
 
-  override def generate(api: Tree.Api): Result[Defn.Object] = {
+  override def apply(api: Tree.Api): Result[Defn.Object] = {
     val operations = api.operations.flatMap(generateOperation)
     val fragments =
       if (emitInterfaces)
         api.interfaces.map(generateInterface)
       else
         Seq.empty
+    val types = api.types.flatMap(generateType)
 
-    for {
-      types <- api.types.map(generateType).toList.sequenceU
-    } yield {
+    Right(
       q"""
         object $moduleName {
           ..$operations
           ..$fragments
-          ..${types.flatten}
+          ..$types
           ..$stats
         }
       """
-    }
+    )
   }
 
   def termParam(paramName: String, tpe: Type) =
@@ -196,15 +194,15 @@ case class ScalametaGenerator(
     q"case class $className(..$params) extends $template": Stat
   }
 
-  def generateType(tree: Tree.Type): Result[Seq[Stat]] = tree match {
+  def generateType(tree: Tree.Type): Seq[Stat] = tree match {
     case interface: Tree.Interface =>
       if (emitInterfaces)
-        Right(Vector(generateInterface(interface)))
+        Vector(generateInterface(interface))
       else
-        Right(Vector.empty)
+        Vector.empty
 
     case obj: Tree.Object =>
-      Right(Vector(generateObject(obj, Seq.empty)))
+      Vector(generateObject(obj, Seq.empty))
 
     case Tree.Enum(name, values) =>
       val enumValues = values.map { value =>
@@ -215,29 +213,24 @@ case class ScalametaGenerator(
 
       val enumName   = Type.Name(name)
       val objectName = Term.Name(name)
-      Right(
-        Vector[Stat](
-          q"sealed trait $enumName",
-          q"object $objectName { ..$enumValues }"
-        ))
+      Vector[Stat](
+        q"sealed trait $enumName",
+        q"object $objectName { ..$enumValues }"
+      )
 
     case Tree.TypeAlias(from, to) =>
       val alias      = Type.Name(from)
       val underlying = Type.Name(to)
-      Right(Vector(q"type $alias = $underlying": Stat))
+      Vector(q"type $alias = $underlying": Stat)
 
     case Tree.Union(name, types) =>
       val unionValues = types.map(obj => generateObject(obj, Seq(name)))
       val unionName   = Type.Name(name)
       val objectName  = Term.Name(name)
-      Right(
-        Vector[Stat](
-          q"sealed trait $unionName",
-          q"object $objectName { ..$unionValues }"
-        ))
-
-    case unknown =>
-      Left(Failure("Unknown output type " + unknown))
+      Vector[Stat](
+        q"sealed trait $unionName",
+        q"object $objectName { ..$unionValues }"
+      )
   }
 
 }

@@ -59,7 +59,7 @@ case class Builder private (
       validSchema   <- schema
       validDocument <- document
       api           <- Importer(validSchema, validDocument).parse
-      result        <- generator.generate(api)
+      result        <- generator(api)
     } yield result
 }
 

@@ -30,11 +30,7 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
       Tree.Api(
         document.operations.values.map(generateOperation).toVector,
         document.fragments.values.toVector.map(generateFragment),
-        schema.typeList
-          .filter(types)
-          .map(generateType)
-          .flatten
-          .toVector
+        schema.typeList.filter(types).collect(generateType)
       ))
 
   /**
@@ -152,38 +148,32 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
     Tree.Object(obj.name, fields)
   }
 
-  def generateType(tpe: Type): Option[Tree.Type] = tpe match {
+  def generateType: PartialFunction[Type, Tree.Type] = {
     case interface: InterfaceType[_, _] =>
       val fields = interface.uniqueFields.map { field =>
         touchType(field.fieldType)
         Tree.Field(field.name, field.fieldType)
       }
-      Some(Tree.Interface(interface.name, fields))
+      Tree.Interface(interface.name, fields)
 
     case obj: ObjectType[_, _] =>
-      Some(generateObject(obj))
+      generateObject(obj)
 
     case enum: EnumType[_] =>
       val values = enum.values.map(_.name)
-      Some(Tree.Enum(enum.name, values))
+      Tree.Enum(enum.name, values)
 
     case union: UnionType[_] =>
-      Some(Tree.Union(union.name, union.types.map(generateObject)))
+      Tree.Union(union.name, union.types.map(generateObject))
 
     case inputObj: InputObjectType[_] =>
       val fields = inputObj.fields.map { field =>
         touchType(field.fieldType)
         Tree.Field(field.name, field.fieldType)
       }
-      Some(Tree.Object(inputObj.name, fields))
+      Tree.Object(inputObj.name, fields)
 
     case IDType =>
-      Some(Tree.TypeAlias("ID", "String"))
-
-    case ListInputType(_) | OptionInputType(_) =>
-      None
-
-    case ListType(_) | OptionType(_) | ScalarAlias(_, _, _) | ScalarType(_, _, _, _, _, _, _, _) =>
-      None
+      Tree.TypeAlias("ID", "String")
   }
 }

@@ -19,16 +19,12 @@ package com.mediative.sangria.codegen
 /**
  * Generate a result from the loaded tree.
  */
-abstract class Generator[T] {
-  def generate(api: Tree.Api): Result[T]
-}
+trait Generator[T] extends (Tree.Api => Result[T])
 
 object Generator {
 
   /**
    * A pass-through generator which generates the original tree.
    */
-  implicit val TreeGenerator = new Generator[Tree.Api] {
-    override def generate(api: Tree.Api) = Right(api)
-  }
+  implicit val TreeGenerator: Generator[Tree.Api] = Right(_)
 }
