@@ -67,7 +67,7 @@ val codegen = project("sangria-codegen")
     libraryDependencies ++= Seq(
       "org.scalatest"       %% "scalatest" % "3.0.3" % Test,
       "org.scalameta"       %% "scalameta" % "1.8.0",
-      "org.sangria-graphql" %% "sangria"   % "1.2.2",
+      "org.sangria-graphql" %% "sangria"   % "1.3.0",
       "org.typelevel"       %% "cats"      % "0.9.0"
     )
   )
