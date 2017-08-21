@@ -7,11 +7,9 @@
   [Latest version]: https://api.bintray.com/packages/mediative/maven/sangria-codegen/images/download.svg
   [Bintray]: https://bintray.com/mediative/maven/sangria-codegen/_latestVersion
 
-Generate API code based on a GraphQL schema and queries.
+Generate API code based on a GraphQL schema and query documents.
 
-Inspired by [apollo-codegen](https://github.com/apollographql/apollo-codegen) and
-trying to fix
-[sangria-graphql/sangria#64](https://github.com/sangria-graphql/sangria/issues/64).
+Inspired by [apollo-codegen](https://github.com/apollographql/apollo-codegen).
 
 ⚠️ *This project is still in early stages of development.* ⚠️
 
@@ -33,7 +31,7 @@ libraryDependencies += "com.mediative" %% "sangria-codegen" % "0.0.6"
 
 This library is built with sbt, which needs to be installed. Run the following command from the project root, to build and run all test:
 
-    $ sbt test
+    $ sbt test scripted
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
 
@@ -43,7 +41,7 @@ To release version `x.y.z` run:
 
     $ sbt -Dversion=x.y.z release
 
-This will run the tests, create a tag and publishing JARs and API docs.
+This will run the tests, create a tag and publish JARs and API docs.
 
 ## License
 
