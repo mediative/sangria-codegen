@@ -18,6 +18,7 @@ For code contributions, these are the suggested steps:
  - Fork the repository on GitHub.
  - Develop your change on a feature branch.
  - Write tests to validate your change works as expected.
+ - Run `bin/scalafmt` to format the code.
  - Create a pull request.
  - Address any issues raised during the code review.
  - Once you get a "+1" on the pull request, the change can be merged.
