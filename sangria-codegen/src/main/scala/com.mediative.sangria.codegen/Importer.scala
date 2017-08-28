@@ -59,16 +59,15 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
 
   def generateSelections(
       selections: Seq[ast.Selection],
-      typeConditions: Set[String] = Set.empty): Tree.Selection =
+      typeConditions: Set[Type] = Set.empty): Tree.Selection =
     selections.map(generateSelection(typeConditions)).foldLeft(Tree.Selection.empty)(_ + _)
 
-  def generateSelection(typeConditions: Set[String])(node: ast.AstNode): Tree.Selection = {
-    def filteredByTypeCondition(namedType: Option[ast.NamedType])(
-        f: => Tree.Selection): Tree.Selection =
-      if (typeConditions.nonEmpty && !namedType.map(_.name).filter(typeConditions).isDefined)
-        Tree.Selection.empty
-      else
+  def generateSelection(typeConditions: Set[Type])(node: ast.Selection): Tree.Selection = {
+    def conditionalFragment(f: => Tree.Selection): Tree.Selection =
+      if (typeConditions.isEmpty || typeConditions(typeInfo.tpe.get))
         f
+      else
+        Tree.Selection.empty
 
     typeInfo.enter(node)
     val result = node match {
@@ -79,7 +78,7 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
           case union: UnionType[_] =>
             val types = union.types.toList.map { tpe =>
               // Prepend the union type name to include and descend into fragment spreads
-              val conditions = (union.name +: tpe.name +: tpe.interfaces.map(_.name)).toSet
+              val conditions = Set[Type](union, tpe) ++ tpe.interfaces
               val selection  = generateSelections(field.selections, conditions)
               Tree.UnionSelection(tpe, selection)
             }
@@ -98,16 +97,15 @@ case class Importer(schema: Schema[_, _], document: ast.Document) {
         val name     = fragmentSpread.name
         val fragment = document.fragments(fragmentSpread.name)
         // Sangria's TypeInfo abstraction does not resolve fragment spreads
-        // when traversing, so explicitly enter to resolved fragment.
+        // when traversing, so explicitly enter resolved fragment.
         typeInfo.enter(fragment)
-        val result = filteredByTypeCondition(Some(fragment.typeCondition))(
+        val result = conditionalFragment(
           generateSelections(fragment.selections, typeConditions).copy(interfaces = Vector(name)))
         typeInfo.leave(fragment)
         result
 
       case inlineFragment: ast.InlineFragment =>
-        filteredByTypeCondition(inlineFragment.typeCondition)(
-          generateSelections(inlineFragment.selections))
+        conditionalFragment(generateSelections(inlineFragment.selections))
 
       case unknown =>
         sys.error("Unknown selection: " + unknown.toString)
