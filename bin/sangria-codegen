@@ -3,7 +3,7 @@
 # set -x
 
 HERE="$(dirname $0)"
-VERSION="0.0.6"
+VERSION="0.0.7"
 COURSIER="$HERE/.coursier"
 COMMAND="$HERE/.sangria-codegen-$VERSION"
 

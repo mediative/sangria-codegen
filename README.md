@@ -19,7 +19,7 @@ Add the following to your `build.sbt`:
 
 ```sbt
 resolvers += Resolver.bintrayRepo("mediative", "maven")
-libraryDependencies += "com.mediative" %% "sangria-codegen" % "0.0.6"
+libraryDependencies += "com.mediative" %% "sangria-codegen" % "0.0.7"
 ```
 
 ## Documentation
