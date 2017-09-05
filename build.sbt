@@ -3,6 +3,8 @@ import ReleaseTransformations._
 
 Jvm.`1.8`.required
 
+addCommandAlias("validate", cmdInAll("clean; test"))
+
 inThisBuild(
   Def.settings(
     organization := "com.mediative",
@@ -24,11 +26,7 @@ lazy val macroAnnotationSettings = Seq(
 )
 
 lazy val root = Project(id = "sangria-codegen-root", base = file("."))
-  .enablePlugins(
-    MediativeGitHubPlugin,
-    MediativeReleasePlugin,
-    CrossPerProjectPlugin,
-    SiteScaladocPlugin)
+  .enablePlugins(MediativeGitHubPlugin, MediativeReleasePlugin, SiteScaladocPlugin)
   .aggregate(codegen, cli, sbtPlugin)
   .settings(
     noPublishSettings,
@@ -42,10 +40,10 @@ lazy val root = Project(id = "sangria-codegen-root", base = file("."))
         st.put(versions, (v, v))
       },
       runClean,
-      releaseStepCommandAndRemaining("+test"),
+      releaseStepCommandAndRemaining("validate"),
       setReleaseVersion,
       tagRelease,
-      releaseStepCommandAndRemaining("+publish"),
+      releaseStepCommandAndRemaining(cmdInAll("publish")),
       pushChanges
     ) ++ postReleaseSteps.value,
     // Ignore the macro part when generating the API docs with sbt-unidoc
@@ -92,6 +90,12 @@ val cli = project("sangria-codegen-cli")
 val sbtPlugin = project("sbt-sangria-codegen")
   .enablePlugins(MediativeBintrayPlugin, BuildInfoPlugin)
   .settings(
+    test in Test := Def
+      .sequential(
+        test in Test,
+        scripted.toTask("")
+      )
+      .value,
     scalaVersion := "2.10.6",
     crossScalaVersions := Seq("2.10.6"),
     scalacOptions ~= { _.filterNot(Set("-Ywarn-unused-import")) },
@@ -113,3 +117,12 @@ val sbtPlugin = project("sbt-sangria-codegen")
   )
 
 def project(name: String) = Project(id = name, base = file(name))
+
+def cmd(versions: String*)(projects: String*)(task: String): String =
+  (for (v <- versions; p <- projects)
+    yield
+      s""";project $p ;set scalaVersion := "$v" ;$task ;project sangria-codegen-root""").mkString
+
+def cmdInAll(task: String) =
+  cmd("2.11.11", "2.12.3")("sangria-codegen", "sangria-codegen-cli")(task) +
+    cmd("2.10.6")("sbt-sangria-codegen")(task)
