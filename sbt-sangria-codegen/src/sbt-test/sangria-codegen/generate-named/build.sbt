@@ -15,7 +15,8 @@ TaskKey[Unit]("check") := {
 
   assert(file.exists)
 
-  val compare = IO.read(file).trim == IO.read(expected).trim
+  // Drop the package line before comparing
+  val compare = IO.readLines(file).drop(1).mkString("\n").trim == IO.read(expected).trim
   if (!compare)
     s"diff -u $expected $file".!
   assert(compare, s"$file does not equal $expected")

@@ -52,6 +52,9 @@ import sbt.Keys._
  *  - `excludeFilter in sangriaCodegen`: Filter out query documents.
  *    Defaults to `HiddenFileFilter`.
  *
+ *  - `sangriaCodegenPackage`: Package of the enclosing object.
+ *    Defaults to `sangria.codegen`.
+ *
  *  - `name in sangriaCodegen`: Name of the enclosing object.
  *
  * @example
@@ -66,6 +69,7 @@ object SangriaCodegenPlugin extends AutoPlugin {
     val SangriaCodegen        = config("sangria-codegen").hide
     val sangriaCodegenSchema  = taskKey[File]("GraphQL schema file")
     val sangriaCodegenQueries = taskKey[Seq[File]]("GraphQL query documents")
+    val sangriaCodegenPackage = settingKey[String]("Package for the generated code")
     val sangriaCodegen        = taskKey[File]("Generate GraphQL API code")
   }
   import autoImport._
@@ -114,6 +118,7 @@ object SangriaCodegenPlugin extends AutoPlugin {
             excludeFilter in sangriaCodegen)
           .value,
         sourceGenerators += Def.task { Seq(sangriaCodegen.value) },
+        sangriaCodegenPackage := "sangria.codegen",
         name in sangriaCodegen := "SangriaCodegen",
         sangriaCodegen := {
           val output  = sourceManaged.value / "sbt-sangria-codegen" / "SangriaCodegen.scala"
@@ -122,6 +127,8 @@ object SangriaCodegenPlugin extends AutoPlugin {
             "generate",
             "--schema",
             sangriaCodegenSchema.value.getAbsolutePath,
+            "--package",
+            sangriaCodegenPackage.value,
             "--object",
             (name in sangriaCodegen).value,
             "--output",

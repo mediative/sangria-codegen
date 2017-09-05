@@ -118,7 +118,7 @@ case class Generate(
       .map { code =>
         val stdout = outputStream(output)
         `package`.foreach { packageName =>
-          stdout.println(s"package $packageName\n")
+          stdout.println(s"package $packageName")
           stdout.println()
         }
         stdout.println(code.show[Syntax])
