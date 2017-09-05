@@ -110,7 +110,7 @@ object SangriaSchemagenPlugin extends AutoPlugin {
             streams.value.log
           )
 
-          streams.value.log.info("Generating schema in $schemaFile")
+          streams.value.log.info(s"Generating schema in $schemaFile")
           schemaFile
         }
       )
