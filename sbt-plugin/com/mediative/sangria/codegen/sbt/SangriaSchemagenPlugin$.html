@@ -40,7 +40,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Generate GraphQL schema file from a Sangria schema instance.</p><h4> Usage </h4><p>This plugin must be explicitly enabled. To enable it add the following line
-to your <code>.sbt</code> file:</p><pre>enablePlugins(SangriaSchemagenPlugin)</pre><p>In addition, it is required to configure <code>sangriaSchemagenCode</code> with a snippet
+to your <code>.sbt</code> file:</p><pre>enablePlugins(SangriaSchemagenPlugin)</pre><p>In addition, it is required to configure <code>sangriaSchemagenSnippet</code> with a snippet
 of Scala code providing access to your <code>sangria.schema.Schema[_, _]</code>.</p><p>See the <a href="https://github.com/mediative/sangria-codegen/tree/master/sbt-sangria-codegen/src/sbt-test/sangria-codegen/generate-schema" target="_blank">example project</a>.</p><h4> Using with <a href="SangriaCodegenPlugin$.html" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin">SangriaCodegenPlugin</a> </h4><p>To use this plugin to generate a schema for use with <a href="SangriaCodegenPlugin$.html" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaCodegenPlugin">SangriaCodegenPlugin</a>
 they must be configured in separate projects. For example, <a href="" class="extype" name="com.mediative.sangria.codegen.sbt.SangriaSchemagenPlugin">SangriaSchemagenPlugin</a>
 could be enabled in the server project which defines the Sangria schema, and

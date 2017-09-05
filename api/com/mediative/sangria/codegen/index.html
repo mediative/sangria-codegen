@@ -173,7 +173,7 @@
                         </a>
                       </li><li class="current-entities indented4">
                         <a class="object" href="Generator$.html" title=""></a>
-                        <a class="class" href="Generator.html" title="Generate a result from the loaded tree."></a>
+                        <a class="trait" href="Generator.html" title="Generate a result from the loaded tree."></a>
                         <a href="Generator.html" title="Generate a result from the loaded tree.">
                           Generator
                         </a>
@@ -227,7 +227,7 @@
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../../../../scala/index.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="../../../../scala/index.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.3/scala/collection/immutable/List.html#scala.Any" class="extype" name="scala.collection.immutable.List">Any</a></div>
         </div></div>
         
 
@@ -289,7 +289,7 @@
       <span class="symbol">
         <a title="" href="Builder.html">
               <span class="name">Builder</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.3/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.3/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -307,25 +307,25 @@
       <span class="symbol">
         <a title="Generate a result from the loaded tree." href="Failure.html">
               <span class="name">Failure</span>
-            </a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../../../scala/index.html#Exception=Exception" class="extmbr" name="scala.Exception">Exception</a> with <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../../../scala/index.html#Exception=Exception" class="extmbr" name="scala.Exception">Exception</a> with <a href="http://www.scala-lang.org/api/2.12.3/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.3/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Generate a result from the loaded tree.</p>
     </li><li name="com.mediative.sangria.codegen.Generator" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="Generator[T]extendsAnyRef"></a><a id="Generator[T]:Generator[T]"></a>
+      <a id="Generator[T]extendscom.mediative.sangria.codegen.Tree.Api=&gt;com.mediative.sangria.codegen.Result[T]"></a><a id="Generator[T]:Generator[T]"></a>
       <span class="permalink">
-      <a href="../../../../com/mediative/sangria/codegen/index.html#Generator[T]extendsAnyRef" title="Permalink">
+      <a href="../../../../com/mediative/sangria/codegen/index.html#Generator[T]extendscom.mediative.sangria.codegen.Tree.Api=&gt;com.mediative.sangria.codegen.Result[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
         <a title="Generate a result from the loaded tree." href="Generator.html">
               <span class="name">Generator</span>
-            </a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="../../../../scala/index.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+            </a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends (<a href="Tree$$Api.html" class="extype" name="com.mediative.sangria.codegen.Tree.Api">Api</a>) ⇒ <a href="#Result[T]=Either[com.mediative.sangria.codegen.Failure,T]" class="extmbr" name="com.mediative.sangria.codegen.Result">Result</a>[<span class="extype" name="com.mediative.sangria.codegen.Generator.T">T</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Generate a result from the loaded tree.</p>
@@ -343,7 +343,7 @@
       <span class="symbol">
         <a title="" href="Importer.html">
               <span class="name">Importer</span>
-            </a><span class="params">(<span name="schema">schema: <span class="extype" name="sangria.schema.Schema">Schema</span>[_, _]</span>, <span name="document">document: <span class="extype" name="sangria.ast.Document">Document</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="params">(<span name="schema">schema: <span class="extype" name="sangria.schema.Schema">Schema</span>[_, _]</span>, <span name="document">document: <span class="extype" name="sangria.ast.Document">Document</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.3/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.3/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -359,7 +359,7 @@
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">Result</span><span class="tparams">[<span name="T">T</span>]</span><span class="result alias"> = <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.util.Either" class="extype" target="_top">Either</a>[<a href="Failure.html" class="extype" name="com.mediative.sangria.codegen.Failure">Failure</a>, <span class="extype" name="com.mediative.sangria.codegen.Result.T">T</span>]</span>
+        <span class="name">Result</span><span class="tparams">[<span name="T">T</span>]</span><span class="result alias"> = <a href="http://www.scala-lang.org/api/2.12.3/scala/util/Either.html#scala.util.Either" class="extype" name="scala.util.Either">Either</a>[<a href="Failure.html" class="extype" name="com.mediative.sangria.codegen.Failure">Failure</a>, <span class="extype" name="com.mediative.sangria.codegen.Result.T">T</span>]</span>
       </span>
       
       
@@ -377,7 +377,7 @@
       <span class="symbol">
         <a title="Generate code using Scalameta." href="ScalametaGenerator.html">
               <span class="name">ScalametaGenerator</span>
-            </a><span class="params">(<span name="moduleName">moduleName: <span class="extype" name="scala.meta.Term.Name">Name</span></span>, <span name="stats">stats: <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.collection.immutable.Seq" class="extype" target="_top">Seq</a>[<span class="extype" name="scala.meta.Stat">Stat</span>] = <span class="symbol"><span class="name"><a href="../../../../scala/index.html">Vector.empty</a></span></span></span>)</span><span class="result"> extends <a href="Generator.html" class="extype" name="com.mediative.sangria.codegen.Generator">Generator</a>[<span class="extype" name="scala.meta.Defn.Object">Object</span>] with <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="params">(<span name="moduleName">moduleName: <span class="extype" name="scala.meta.Term.Name">Name</span></span>, <span name="emitInterfaces">emitInterfaces: <a href="http://www.scala-lang.org/api/2.12.3/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="stats">stats: <a href="http://www.scala-lang.org/api/2.12.3/scala/collection/immutable/Seq.html#scala.collection.immutable.Seq" class="extype" name="scala.collection.immutable.Seq">Seq</a>[<span class="extype" name="scala.meta.Stat">Stat</span>] = <span class="symbol"><span class="name"><a href="../../../../scala/index.html">Vector.empty</a></span></span></span>)</span><span class="result"> extends <a href="Generator.html" class="extype" name="com.mediative.sangria.codegen.Generator">Generator</a>[<span class="extype" name="scala.meta.Defn.Object">Object</span>] with <a href="http://www.scala-lang.org/api/2.12.3/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.3/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Generate code using Scalameta.</p>
@@ -421,7 +421,7 @@
       <span class="symbol">
         <a title="" href="Builder$.html">
               <span class="name">Builder</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.3/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -457,7 +457,7 @@
       <span class="symbol">
         <a title="" href="ScalametaGenerator$.html">
               <span class="name">ScalametaGenerator</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.3/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -492,7 +492,7 @@
         <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/index.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.2/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.3/scala/collection/immutable/List.html#scala.Any" class="extype" name="scala.collection.immutable.List">Any</a></h3>
             </div>
         
         </div>
