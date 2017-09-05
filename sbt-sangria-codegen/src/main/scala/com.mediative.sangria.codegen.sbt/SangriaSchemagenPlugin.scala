@@ -142,6 +142,7 @@ object SangriaSchemagenPlugin extends AutoPlugin {
                       write(graphql)
                       close
                     }
+                    ()
                   }
                 }
               """
