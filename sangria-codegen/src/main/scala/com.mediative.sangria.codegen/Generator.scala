@@ -26,5 +26,5 @@ object Generator {
   /**
    * A pass-through generator which generates the original tree.
    */
-  implicit val TreeGenerator: Generator[Tree.Api] = Right(_)
+  implicit val TreeGenerator: Generator[Tree.Api] = (tree: Tree.Api) => Right(tree)
 }
