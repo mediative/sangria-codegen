@@ -31,7 +31,7 @@ libraryDependencies += "com.mediative" %% "sangria-codegen" % "0.0.7"
 
 This library is built with sbt, which needs to be installed. Run the following command from the project root, to build and run all test:
 
-    $ sbt test scripted
+    $ sbt validate
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
 

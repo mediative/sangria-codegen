@@ -1,15 +1,12 @@
 language: scala
 sudo: false
-
-scala:
-  - 2.11.11
-  - 2.12.3
+scala: 2.12.3
 
 jdk: oraclejdk8
 
 script:
-  - if [[ "$TRAVIS_SCALA_VERSION" == 2.12* ]]; then bin/scalafmt --test; fi
-  - sbt ++$TRAVIS_SCALA_VERSION +test +sbt-sangria-codegen/scripted
+  - bin/scalafmt --test
+  - sbt validate
 
 before_cache:
   # See http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
