@@ -11,7 +11,7 @@ Generate API code based on a GraphQL schema and query documents.
 
 Inspired by [apollo-codegen](https://github.com/apollographql/apollo-codegen).
 
-⚠️ *This project is still in early stages of development.* ⚠️
+⚠️ *This project has been superseded by [sbt-graphql](https://github.com/muuki88/sbt-graphql).* ⚠️
 
 ## Getting Started
 
